@@ -76,6 +76,9 @@ observations in our own words; no game code is reproduced. The game's code ships
   half-finished concept.
 - The game autosaves (slot `auto`) after a release, a finished research, training or engine, and
   when the window closes.
+- A save writes the game data with `DataStore.saveToSlotAsync(slot, json, done)` and then, in
+  `done`, a small header for the load menu (name, cash, fans, week, mods, date) with
+  `DataStore.setValue(slot, json)`. Level restarts use slots like `2L1`.
 - Game speed is `GameManager._timeModifier` (1 = normal; the settings use 0.5, 1 and 2.5, and
   debug builds also allow 10 and 100).
 - Sudden wealth triggers the "New Office?" decision; running out of money triggers bank offers and
