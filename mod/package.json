@@ -8,5 +8,6 @@
   "main": "./main.js",
   "dependencies": {
     "gdt-modAPI": "0.1.x"
-  }
+  },
+  "image": "image.png"
 }
