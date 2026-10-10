@@ -19,7 +19,7 @@ more reasons to keep a studio going for decades, without breaking saves or the g
 
 Finance ledger, cash flow, per-game profitability and a read-only franchise view.
 
-## Phase 2: Franchise gameplay (next)
+## Phase 2: Franchise gameplay (built, v0.2; in play testing)
 
 Make series a real strategic choice instead of a naming convention. The proposed rules and numbers
 are in [design/phase-2-franchises.md](design/phase-2-franchises.md). Candidate features:
@@ -38,8 +38,9 @@ are in [design/phase-2-franchises.md](design/phase-2-franchises.md). Candidate f
 - **Dashboard support.** The Franchises tab shows reputation, fatigue and the expected hype for the
   next entry, so players can plan around the new systems.
 
-Open questions: exact formulas and balance targets; whether to allow several sequels per game; how
-each feature appears in the game-creation flow; per-feature settings UI.
+Built: brand, fatigue, spin-offs, launch hype, sales effects, fan events, dashboard support and a
+Settings tab. Next: tune the numbers through play testing (the Developer tab's cheats help), then
+Phase 2b, remasters, which need their own research into the game-creation screen.
 
 ## Later ideas (unordered)
 
