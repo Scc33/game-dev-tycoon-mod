@@ -1,0 +1,24 @@
+{
+  "name": "game-dev-tycoon-studio-dashboard",
+  "private": true,
+  "description": "Development tooling for the Studio Dashboard mod for Game Dev Tycoon. The mod itself lives in mod/.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && npm test",
+    "link": "scripts/link-mod.sh",
+    "game": "scripts/launch-debug.sh"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "eslint": "9.39.5",
+    "globals": "15.14.0",
+    "prettier": "3.4.2"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "scc33-studio-dashboard",
+  "name": "Studio Dashboard",
+  "version": "0.1.0",
+  "author": "Sean Coughlin (github.com/Scc33)",
+  "url": "https://github.com/Scc33/game-dev-tycoon-mod",
+  "description": "Finance ledger, charts, per-game profitability and franchise tracking for your studio. Right-click the office and pick Studio Dashboard.",
+  "main": "./main.js",
+  "dependencies": {
+    "gdt-modAPI": "0.1.x"
+  }
+}
