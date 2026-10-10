@@ -37,13 +37,23 @@ if (!args['no-reload']) {
 	console.log('save loaded');
 }
 
-// Click through pending notifications so the game reaches an idle, paused state.
-for (let i = 0; i < 10; i++) {
-	const busy = await evaluate(
+// Dismiss informational popups so the game reaches an idle state. Only buttons labelled
+// OK/Close/Continue are clicked, so a decision event is never answered on the player's behalf.
+const DISMISS = ['OK', 'Close', 'Continue'];
+for (let i = 0, idle = 0; i < 60 && idle < 3; i++) {
+	const clicked = await evaluate(
 		cdp,
-		`(() => { const b = $('.simplemodal-container').find('.okButton:visible').first(); b.click(); return b.length; })()`,
+		`(() => {
+			const labels = ${JSON.stringify(DISMISS)};
+			const b = $('.simplemodal-container').find(':visible').filter(function () {
+				return labels.indexOf($(this).text().trim()) !== -1 && $(this).children().length === 0;
+			}).first();
+			b.click();
+			return b.length ? 'clicked' : $('.simplemodal-container').length ? 'waiting' : 'idle';
+		})()`,
 	);
-	if (!busy) break;
+	// Review screens type their text out before showing Close, so keep waiting while a popup is open.
+	idle = clicked === 'idle' ? idle + 1 : 0;
 	await sleep(1500);
 }
 await evaluate(cdp, 'GameManager.pause(true); true');
