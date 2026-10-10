@@ -1,0 +1,91 @@
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
+import { makeCompany, makeGame } from './helpers/fixtures.js';
+import { loadMod, plain } from './helpers/load-mod.js';
+
+const SD = loadMod(['src/core.js', 'src/games.js', 'src/franchises.js']);
+
+const series = () => {
+	const one = makeGame({ id: 'p1', title: 'Pals', releaseWeek: 20, score: 7, revenue: 200000, costs: 50000 });
+	const two = makeGame({
+		id: 'p2',
+		title: 'Pals 2',
+		sequelTo: 'p1',
+		releaseWeek: 50,
+		score: 8.5,
+		revenue: 400000,
+		costs: 100000,
+		flags: { sequelsTooClose: true },
+	});
+	const pack = makeGame({
+		id: 'p2x',
+		title: 'Pals 2: Extra',
+		sequelTo: 'p2',
+		releaseWeek: 100,
+		score: 6,
+		revenue: 0,
+		costs: 30000,
+		flags: { isExtensionPack: true },
+	});
+	const solo = makeGame({ id: 's1', title: 'Solo', releaseWeek: 30, score: 9, revenue: 300000, costs: 80000 });
+	return [one, two, pack, solo];
+};
+
+describe('franchises.all', () => {
+	it('groups sequels and packs under the original game, in release order', () => {
+		const [f] = SD.franchises.all(makeCompany(series(), { currentWeek: 120 }));
+		assert.equal(f.name, 'Pals');
+		assert.deepEqual(plain(f.entries.map((e) => e.title)), ['Pals', 'Pals 2', 'Pals 2: Extra']);
+		assert.equal(f.revenue, 600000);
+		assert.equal(f.profit, 420000);
+	});
+
+	it('measures release gaps and flags sequels that came too soon', () => {
+		const [f] = SD.franchises.all(makeCompany(series(), { currentWeek: 120 }));
+		assert.equal(f.entries[0].gapWeeks, null);
+		assert.equal(f.entries[1].gapWeeks, 30);
+		assert.equal(f.entries[1].tooClose, true);
+		assert.equal(f.entries[1].predecessor, 'Pals');
+	});
+
+	it('averages scores and tracks their trend, ignoring packs', () => {
+		const [f] = SD.franchises.all(makeCompany(series(), { currentWeek: 120 }));
+		assert.equal(f.avgScore, 7.75);
+		assert.equal(f.scoreTrend, 1.5);
+		assert.deepEqual([...f.scores], [7, 8.5]);
+	});
+
+	it('advises when the next sequel can release without the penalty', () => {
+		const [f] = SD.franchises.all(makeCompany(series(), { currentWeek: 120 }));
+		assert.equal(f.next.basedOn, 'Pals 2: Extra');
+		assert.equal(f.next.safeFromWeek, 140);
+		assert.equal(f.next.weeksUntilSafe, 20);
+	});
+
+	it('includes a sequel in development', () => {
+		const current = makeGame({ id: 'p3', title: 'Pals 3', sequelTo: 'p2x', releaseWeek: 0 });
+		const [f] = SD.franchises.all(makeCompany(series(), { currentWeek: 160, currentGame: current }));
+		assert.equal(f.inDevelopment, true);
+		assert.equal(f.entries[f.entries.length - 1].title, 'Pals 3');
+		assert.equal(f.revenue, 600000);
+	});
+
+	it('ignores standalone games and survives broken links', () => {
+		const orphan = makeGame({ id: 'o2', title: 'Orphan 2', sequelTo: 'missing' });
+		assert.equal(SD.franchises.all(makeCompany([makeGame(), orphan])).length, 0);
+	});
+});
+
+describe('franchises.candidates', () => {
+	it('suggests well-reviewed, profitable standalone games', () => {
+		const picks = SD.franchises.candidates(makeCompany(series(), { currentWeek: 60 }));
+		assert.deepEqual(plain(picks.map((g) => g.title)), ['Solo']);
+		assert.equal(picks[0].next.weeksUntilSafe, 10);
+	});
+
+	it('drops a game once a sequel is in development', () => {
+		const current = makeGame({ id: 's2', title: 'Solo 2', sequelTo: 's1' });
+		const picks = SD.franchises.candidates(makeCompany(series(), { currentGame: current }));
+		assert.equal(picks.length, 0);
+	});
+});
