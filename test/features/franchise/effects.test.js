@@ -125,9 +125,87 @@ describe('franchise effects: launch hype', () => {
 	});
 
 	it('runs every week once installed', () => {
-		env.SD.franchise.effects.install({ gameplay: { weekProceeded: 'week' } });
+		env.SD.franchise.effects.install({ gameplay: { weekProceeded: 'week', salesCalculated: 'sales' } });
 		const company = studio();
 		env.handlers.week.forEach((fn) => fn({ company }));
 		assert.equal(company.currentGame.hypePoints, 150);
+	});
+});
+
+describe('franchise effects: sales', () => {
+	let env;
+	beforeEach(() => {
+		env = setup();
+	});
+
+	// The game has just released Quest 3: release week set, sales target calculated.
+	const released = (overrides = {}) => {
+		const company = studio({ releaseWeek: 121, totalSalesCash: 1000000, fansChangeTarget: 5000, ...overrides });
+		return { company, game: company.currentGame };
+	};
+
+	it('scales the lifetime sales target and fan gain by brand and fatigue', () => {
+		const { company, game } = released();
+		const result = env.SD.franchise.effects.releaseSales(company, game);
+		assert.equal(result.sales, 1.174);
+		assert.equal(game.totalSalesCash, 1174479);
+		assert.equal(game.fansChangeTarget, 5872);
+		assert.equal(result.baseSales, 1000000);
+	});
+
+	it('leaves fan losses alone', () => {
+		const { company, game } = released({ fansChangeTarget: -300 });
+		env.SD.franchise.effects.releaseSales(company, game);
+		assert.equal(game.fansChangeTarget, -300);
+	});
+
+	it('applies once, alongside the launch hype record', () => {
+		const { company, game } = released();
+		env.SD.franchise.effects.launchHype(company);
+		env.SD.franchise.effects.releaseSales(company, game);
+		env.SD.franchise.effects.releaseSales(company, game);
+		assert.equal(game.totalSalesCash, 1174479);
+		const record = plain(env.store.data.franchise.applied.q3);
+		assert.equal(record.hype, 140);
+		assert.equal(record.sales, 1.174);
+	});
+
+	it('only touches the company’s own release', () => {
+		const { company } = released();
+		const other = makeGame({ sequelTo: 'q2', totalSalesCash: 500 });
+		assert.equal(env.SD.franchise.effects.releaseSales(company, other), null);
+		assert.equal(env.SD.franchise.effects.releaseSales({ currentGame: other }, other), null);
+		assert.equal(other.totalSalesCash, 500);
+	});
+
+	it('respects the sales setting', () => {
+		env.SD.settings.set('franchise.sales', false);
+		const { company, game } = released();
+		assert.equal(env.SD.franchise.effects.releaseSales(company, game), null);
+		assert.equal(game.totalSalesCash, 1000000);
+	});
+
+	it('runs on the game’s salesCalculated event', () => {
+		env.SD.franchise.effects.install({ gameplay: { weekProceeded: 'week', salesCalculated: 'sales' } });
+		const { company, game } = released();
+		env.handlers.sales.forEach((fn) => fn({ company, game }));
+		assert.equal(game.totalSalesCash, 1174479);
+	});
+
+	it('logs and skips a failure instead of breaking the release', () => {
+		const warnings = [];
+		env.SD.warn = (message) => warnings.push(message);
+		env.SD.franchise.effects.install({ gameplay: { weekProceeded: 'week', salesCalculated: 'sales' } });
+		env.handlers.sales.forEach((fn) =>
+			fn({
+				company: {
+					get currentGame() {
+						throw new Error('boom');
+					},
+				},
+				game: {},
+			}),
+		);
+		assert.equal(warnings.length, 1);
 	});
 });
