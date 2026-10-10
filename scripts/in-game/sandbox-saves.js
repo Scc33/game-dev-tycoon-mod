@@ -1,4 +1,4 @@
-// Evaluate in the running game (node scripts/cdp.mjs evalfile scripts/sandbox-saves.js) before
+// Evaluate in the running game (node scripts/cdp.mjs evalfile scripts/in-game/sandbox-saves.js) before
 // automated testing. Redirects save-slot writes/reads to memory for this session only, so
 // test runs never overwrite real save slots or Steam Cloud. Undone by restarting the game.
 (function () {

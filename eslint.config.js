@@ -27,8 +27,9 @@ export default [
 		},
 	},
 	{
-		// The mod runs as classic scripts inside the game's NW.js 0.49 (Chromium 86).
-		files: ['mod/**/*.js', 'scripts/sandbox-saves.js'],
+		// The mod, and dev snippets evaluated in the game, run as classic scripts inside the
+		// game's NW.js 0.49 (Chromium 86).
+		files: ['mod/**/*.js', 'scripts/in-game/**/*.js'],
 		languageOptions: {
 			ecmaVersion: 2020,
 			sourceType: 'script',
@@ -37,7 +38,6 @@ export default [
 	},
 	{
 		files: ['scripts/**/*.mjs', 'test/**/*.js', '*.js'],
-		ignores: ['scripts/sandbox-saves.js'],
 		languageOptions: {
 			ecmaVersion: 2024,
 			sourceType: 'module',
