@@ -45,7 +45,7 @@
 		const { h, tile, tiles, table, badge, money, status } = SD.dom;
 		const fmt = SD.fmt;
 		const kindOf = (e) => SD.franchise.series.kindOf(f, e);
-		const applied = (e) => SD.franchise.effects.applied(e.id);
+		const applied = (e) => SD.franchise.store.applied(e.id);
 		const head = h('div', { class: 'sdFranchiseHead' }, [
 			h('div', {}, [
 				h('div', { class: 'sdCardTitle', text: `${f.name} series` }),
@@ -136,7 +136,7 @@
 		const dev = f.entries.find((e) => e.inDevelopment);
 		if (dev) {
 			const kind = SD.franchise.series.kindOf(f, dev);
-			const fx = SD.franchise.effects.applied(dev.id);
+			const fx = SD.franchise.store.applied(dev.id);
 			if (fx && fx.hype !== undefined && on('franchise.hype'))
 				lines.push(`${dev.title} started development with +${fx.hype} hype from the series.`);
 			if (on('franchise.sales') && kind !== 'pack')

@@ -1,6 +1,6 @@
 // Studio Dashboard franchise gameplay: applies the model's effects to the game. Each effect
-// is applied once per game and recorded in the save's mod data, so the dashboard can show
-// what every entry received and a reload never applies anything twice.
+// is applied once per game and recorded through F.store, so the dashboard can show what
+// every entry received and a reload never applies anything twice.
 ((SD) => {
 	const F = (SD.franchise = SD.franchise || {});
 	const E = (F.effects = {});
@@ -35,19 +35,16 @@
 	const round1 = (v) => Math.round(v * 10) / 10;
 	const round3 = (v) => Math.round(v * 1000) / 1000;
 
-	E.store = () => {
-		const store = SD.getStore();
-		const data = store.data || (store.data = {});
-		return data.franchise || (data.franchise = { v: 1, applied: {} });
+	SD.options['franchise.events'] = {
+		group: GROUP,
+		name: 'Fan events',
+		description:
+			'Now and then fans ask for a sequel, celebrate an anniversary or miss a dormant series, with choices that trade money or promises for brand.',
+		default: true,
+		order: 40,
 	};
 
-	E.applied = (gameId) => E.store().applied[gameId] || null;
-
-	const record = (gameId, fields) => {
-		const applied = E.store().applied;
-		applied[gameId] = { ...applied[gameId], ...fields };
-		return applied[gameId];
-	};
+	const record = (gameId, fields) => F.store.record(gameId, fields);
 
 	const notify = (company, text) => {
 		if (typeof Notification !== 'function' || !company.notifications) return;
@@ -60,7 +57,7 @@
 		const game = company && company.currentGame;
 		if (!game || !game.sequelTo || !game.genre || !game.topic) return null;
 		if (!enabled('franchise.hype')) return null;
-		const done = E.applied(game.id);
+		const done = F.store.applied(game.id);
 		if (done && done.hype !== undefined) return null;
 		const dev = F.series.development(company);
 		if (!dev || dev.kind === F.model.KINDS.pack) return null;
@@ -91,7 +88,7 @@
 	E.releaseSales = (company, game) => {
 		if (!company || !game || game !== company.currentGame || !game.sequelTo) return null;
 		if (!enabled('franchise.sales')) return null;
-		const done = E.applied(game.id);
+		const done = F.store.applied(game.id);
 		if (done && done.sales !== undefined) return null;
 		const dev = F.series.development(company);
 		if (!dev || dev.entry.id !== game.id || dev.kind === F.model.KINDS.pack) return null;

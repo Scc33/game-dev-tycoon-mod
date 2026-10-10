@@ -33,12 +33,30 @@
 		spinoffBrandShare: 0.6,
 		salesBrandBonus: 0.25, // brand 100 → +25% lifetime sales
 		salesFatiguePenalty: 0.5, // fatigue 100 → −50% lifetime sales
+		// Fan events (features/franchise/events.js).
+		eventCooldownWeeks: 52, // at most one franchise event a year
+		teaseMinScore: 8.5, // "Fans want more" after an entry this good...
+		teaseFromWeeks: 24, // ...released between 6 months
+		teaseToWeeks: 96, // ...and 2 years ago
+		teaseHype: 50,
+		teasePenalty: -5,
+		promiseDueWeeks: 104, // a teased or promised entry must start within 2 years
+		anniversaryWeeks: 480, // 10 years after the first entry
+		anniversaryMinBrand: 40,
+		anniversaryCostShare: 0.02, // of the series' lifetime revenue
+		anniversaryMinCost: 10000,
+		anniversaryBrand: 10,
+		anniversaryFansShare: 0.02,
+		revivalMinBrand: 60, // "Where's the sequel?" for a series this loved...
+		revivalSilentWeeks: 192, // ...after 4 years without an entry
+		revivalHype: 100,
+		revivalPenalty: -15,
 	};
 
 	const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 	const months = (weeks) => weeks / SD.WEEKS_PER_MONTH;
 
-	M.KINDS = { mainline: 'mainline', spinoff: 'spinoff', pack: 'pack' };
+	M.KINDS = { mainline: 'mainline', spinoff: 'spinoff', pack: 'pack', adjust: 'adjust' };
 
 	// An entry is a spin-off when its genre or topic differs from its predecessor's.
 	// `entry` and `predecessor` carry { isPack, genre, topic }, e.g. SD.games.stats().
@@ -78,16 +96,28 @@
 		return { released: true, lastWeek: entry.week, brand, fatigue, lastBrand: brand, lastFatigue: fatigue };
 	};
 
+	// A fan event moved the brand by `delta`. The fade after a long silence is measured from
+	// the last release, so the change is applied to the brand that fade starts from.
+	const adjust = (state, delta) => {
+		const lastBrand = clamp(state.lastBrand + delta, 0, 100);
+		return { ...state, brand: clamp(state.brand + delta, 0, 100), lastBrand };
+	};
+
 	const EMPTY = { released: false, lastWeek: null, brand: 0, fatigue: 0, lastBrand: 0, lastFatigue: 0 };
 
-	// The series as of `week`, from its released entries ({ week, score, kind }, any order;
-	// packs are skipped). `history` has one point per release, measured just before and just
-	// after it, for charts.
+	// The series as of `week`, from its timeline in any order: released entries
+	// ({ week, score, kind }) and brand changes from fan events ({ week, kind: 'adjust',
+	// brand }). Packs are skipped. `history` has one point per release, measured just
+	// before and just after it, for charts.
 	M.evolve = (entries, week, t = M.TUNING) => {
 		const timeline = entries.filter((e) => e.kind !== M.KINDS.pack && e.week <= week).sort((a, b) => a.week - b.week);
 		let state = EMPTY;
 		const history = [];
 		timeline.forEach((entry) => {
+			if (entry.kind === M.KINDS.adjust) {
+				if (state.released) state = adjust(state, entry.brand);
+				return;
+			}
 			const before = state.released ? age(state, entry.week - state.lastWeek, t) : state;
 			state = release(before, entry, t);
 			history.push({ week: entry.week, before: snapshot(before), after: snapshot(state) });

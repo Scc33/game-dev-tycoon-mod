@@ -15,10 +15,10 @@
 	// Mainline, spin-off or pack, judged against the entry it follows.
 	S.kindOf = (series, entry) => F.model.kindOf(entry, byId(series)[entry.sequelTo] || null);
 
-	// The series' released entries as model records.
+	// The series' released entries as model records, plus brand changes from fan events.
 	S.timeline = (series) => {
 		const ids = byId(series);
-		return series.entries
+		const releases = series.entries
 			.filter((e) => !e.inDevelopment)
 			.map((e) => ({
 				id: e.id,
@@ -26,6 +26,7 @@
 				score: e.score,
 				kind: F.model.kindOf(e, ids[e.sequelTo] || null),
 			}));
+		return releases.concat(F.store ? F.store.adjustments(series.id) : []);
 	};
 
 	// Brand and fatigue at `week`. With fatigue switched off it reads as zero.

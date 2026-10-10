@@ -100,6 +100,28 @@ describe('franchise model: rules', () => {
 		assert.equal(s.brand, 75);
 	});
 
+	it('applies brand changes from fan events in time order', () => {
+		const boost = { week: 50, kind: 'adjust', brand: 10 };
+		assert.equal(M.evolve([mainline(0, 10), boost], 60).brand, 85);
+		assert.equal(M.evolve([mainline(0, 10), boost], 40).brand, 75); // not yet
+		assert.equal(M.evolve([mainline(0, 10), { week: 50, kind: 'adjust', brand: 40 }], 60).brand, 100);
+		assert.equal(M.evolve([mainline(0, 10), { week: 50, kind: 'adjust', brand: -90 }], 60).brand, 0);
+	});
+
+	it('ignores brand changes before the first release and keeps them out of the history', () => {
+		const s = M.evolve(
+			[{ week: 0, kind: 'adjust', brand: 30 }, mainline(10, 10), { week: 20, kind: 'adjust', brand: -5 }],
+			30,
+		);
+		assert.equal(s.brand, 70);
+		assert.equal(s.history.length, 1);
+	});
+
+	it('lets a later fade start from the adjusted brand', () => {
+		const s = M.evolve([mainline(0, 10), { week: 10, kind: 'adjust', brand: 10 }], 144 + 40);
+		assert.equal(s.brand, 75);
+	});
+
 	it('sorts entries by release week', () => {
 		const a = M.evolve([mainline(60, 9), mainline(0, 8.5)], 60);
 		const b = M.evolve([mainline(0, 8.5), mainline(60, 9)], 60);

@@ -9,6 +9,7 @@ const FILES = [
 	'src/games.js',
 	'src/franchises.js',
 	'src/features/franchise/model.js',
+	'src/features/franchise/store.js',
 	'src/features/franchise/series.js',
 	'src/features/franchise/effects.js',
 ];
