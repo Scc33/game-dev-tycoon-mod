@@ -66,6 +66,15 @@ const formatArg = (a) =>
 	a.value !== undefined ? (typeof a.value === 'string' ? a.value : JSON.stringify(a.value)) : a.description || a.type;
 
 const [cmd, arg] = process.argv.slice(2);
+// Never hang a script or CI step on an unresponsive game window.
+const TIMEOUT_MS = Number(process.env.GDT_CDP_TIMEOUT_MS) || 30000;
+setTimeout(
+	() => {
+		console.error(`Timed out after ${TIMEOUT_MS}ms`);
+		process.exit(1);
+	},
+	TIMEOUT_MS + (cmd === 'console' ? (Number(arg) || 1) * 1000 : 0),
+).unref();
 const cdp = await connect();
 try {
 	if (cmd === 'eval' || cmd === 'evalfile') {
