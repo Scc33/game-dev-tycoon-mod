@@ -64,6 +64,83 @@ observations in our own words; no game code is reproduced. The game's code ships
   penalty doubled); a higher-tech engine sets `flags.hasBetterEngineThanSequel` (bonus ×1.2, penalty
   turned positive).
 
+## Release order
+
+Releasing a game runs, in order: `beforeReleaseGame`, the release week is set, the review
+(`beforeGameReview` … `afterGameReview`), the sales calculation (`salesCalculated`), the game is
+appended to `gameLog`, then `afterReleaseGame`.
+
+## Hype
+
+- Each game has `hypePoints`. Sources: marketing campaigns during development, game conferences,
+  interviews and some random events, `company.flags.nextGameHypeBonus` (added when the next game is
+  created), and `company.adjustHype(n)`, which adds to the game in development.
+- A marketing campaign's hype grows with the campaign's strength and the genre/topic fit, is best
+  run near 70% progress, and drops to 70% and then 30% when the same campaign is repeated.
+- Sequels get +20% hype from each marketing campaign: +10% with the predecessor's engine, +24% with
+  a better one. The code also has a negative branch for sequels released too soon, but that flag is
+  only set at review time, after marketing has already happened, so in practice it never applies.
+- Hype is only read once, when sales are calculated, and counts up to 500. With a review score of 5
+  or more (8 or more if the player talked the game up in an interview), it adds reach worth up to 5%
+  of the platform market, scaled by (score − 5) / 5. Below that score it _removes_ reach: a hyped
+  flop sells worse than a quiet one.
+- The status bar shows hype multiplied by development progress, so it appears to grow as the game
+  is built.
+
+## Review score
+
+- The game's quality comes from its design and technology points relative to its size. It is
+  scaled by a sum of percentage modifiers, by genre/topic, platform and audience fit, by bugs and
+  by the current trend. Then it is divided by a moving "top score" target that rises each time the
+  player sets a new best. Ten times that ratio, clamped to 1–10, is roughly the score. After that,
+  streak protection, a technology cap for large and AAA games, and an early-years cap apply.
+- The modifiers that matter for series:
+  - −40% if the genre, second genre and topic match the _previous release_. This doesn't apply to
+    expansion packs. A sequel released straight after its predecessor, with no other game in
+    between, almost always takes this hit.
+  - −40% for a sequel released within 40 weeks of its predecessor (`flags.sequelsTooClose`).
+  - −10% when reusing the predecessor's engine (not for packs), or +20% for a better engine.
+  - Smaller modifiers: ±10% golden ratio, up to +20% for good focus, −15% per neglected area.
+- These modifiers are local to the review function, so a mod can't add to them.
+  `beforeGameReview` fires before scoring; `afterGameReview` fires with the final `game.score` and
+  the generated review cards. A mod that changes the score afterwards must also change the cards.
+
+## Sales
+
+- At release the game computes a lifetime revenue target once, as `game.totalSalesCash`, along with
+  the lifetime fan change `game.fansChangeTarget` and the starting chart rank. Then it fires
+  `salesCalculated`. Scaling `totalSalesCash` in that handler scales everything downstream: weekly
+  payouts, units and revenue.
+- Reach is made of three parts:
+  - The platform market size, weighted per platform for multi-platform games and by game size
+    (small ×1, medium ×2, large ×2.2, AAA ×2.5), times a score curve and the audience fit.
+  - Hype, as described above.
+  - Existing fans × score / 10. Fans count in full up to 1.5M, and at 10% beyond that.
+- Units ≈ reach × score / 10, with up to 20% randomness. Unit prices by size are 7, 11, 14 and 18.
+- With a publishing deal, reach is ×10, fans only count up to the size's target fan count, and the
+  studio receives the royalty share of each payout.
+- Each week pays out 20–40% of the remaining target (less for bigger games), and sales end when
+  under about 1% remains. Sales events can add or remove up to 30%.
+- Fan changes:
+  - Score 7 or more: +5–10% of current fans.
+  - Score 5 or more: also +0.5–1% of units sold.
+  - Below 5, _or any sequel released too soon_: up to 25% × (1 − score/10) of fans are lost. So a
+    rushed sequel loses fans even when it reviews well.
+  - Fan changes are paid out alongside weekly sales.
+
+## Decision events
+
+- Events registered with `GDT.addEvent` sit alongside the game's own. Events whose
+  `isRandomEvent` is false fire whenever `trigger(company)` returns true. Random events are drawn
+  one at a time every 36–84 weeks from the eligible pool, and the same one is never drawn twice in
+  a row.
+- The official modAPI example sets `isRandom`, but the game reads `isRandomEvent`, so that example
+  actually behaves as a non-random event.
+- `maxTriggers` is enforced through `company.eventTriggerCounts`, which is saved.
+- The modAPI has no settings-tab API (`GDT.addEvent`, `addPlatform`, `addResearchItem`,
+  `addTopics` and `getDataStore` are the whole surface besides events and loading).
+- `game.flags` is saved as-is, but per-save mod state belongs in the data store.
+
 ## UI
 
 - Right-click menus fire `ui.contextMenuShowing` with `{type, items}`; push `{label, icon, action}` to
