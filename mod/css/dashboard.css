@@ -1,0 +1,512 @@
+/* Studio Dashboard. Everything is scoped to #sdDashboard; colours follow the game's own
+   window palette (cream #FFF9EF, gold border #FFD17B, navy title rule #004E8D, orange
+   action buttons). The game has no dark mode, so neither does the dashboard. */
+
+#sdDashboard {
+	--sd-surface: #fffdf7;
+	--sd-ink: #212121;
+	--sd-ink-2: #55514a;
+	--sd-muted: #7d776b;
+	--sd-hairline: rgba(33, 33, 33, 0.12);
+	--sd-hairline-soft: rgba(33, 33, 33, 0.07);
+	--sd-accent: #004e8d;
+	--sd-pos: #006300;
+	--sd-neg: #b42318;
+	--sd-warn: #8a5300;
+	--sd-good: #006300;
+	--sd-select: #fff1d1;
+
+	width: 960px;
+	height: 700px;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	font-family: 'Segoe UI', 'Open Sans', sans-serif;
+	font-size: 14px;
+	line-height: 1.4;
+	color: var(--sd-ink);
+}
+
+#sdDashboard *,
+#sdDashboard *::before,
+#sdDashboard *::after {
+	box-sizing: border-box;
+}
+
+#sdDashboard .windowTitle {
+	flex: none;
+}
+
+/* ---- Tabs ---- */
+
+#sdDashboard .sdTabs {
+	flex: none;
+	display: flex;
+	gap: 6px;
+	padding: 8px 20px 6px;
+}
+
+#sdDashboard .sdTab {
+	font: inherit;
+	font-size: 15px;
+	padding: 5px 16px;
+	color: var(--sd-ink);
+	border: 1px solid #b7b7b7;
+	border-radius: 4px;
+	background: linear-gradient(to bottom, #fff 0%, #ededed 100%);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	cursor: pointer;
+	outline: none;
+}
+
+#sdDashboard .sdTab:hover {
+	background: linear-gradient(to bottom, #fff 0%, #dcdcdc 100%);
+}
+
+#sdDashboard .sdTab.sdTabActive {
+	border-color: #d9731f;
+	background: linear-gradient(to bottom, #faa51a 0%, #f47a20 100%);
+}
+
+/* ---- Layout ---- */
+
+#sdDashboard .sdBody {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 6px 20px 20px;
+}
+
+#sdDashboard .sdColumns {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+#sdDashboard .sdFilters {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 4px 0 10px;
+}
+
+#sdDashboard .sdCard {
+	background: var(--sd-surface);
+	border: 1px solid var(--sd-hairline);
+	border-radius: 6px;
+	padding: 12px 14px;
+	margin-bottom: 12px;
+}
+
+#sdDashboard .sdCardHead {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+#sdDashboard .sdCardTitle {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+#sdDashboard .sdCardSub,
+#sdDashboard .sdMuted {
+	color: var(--sd-muted);
+	font-size: 13px;
+}
+
+#sdDashboard .sdCardBody {
+	margin-top: 8px;
+}
+
+#sdDashboard p {
+	margin: 6px 0;
+}
+
+/* ---- Stat tiles ---- */
+
+#sdDashboard .sdTiles {
+	display: flex;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+#sdDashboard .sdTile {
+	flex: 1;
+	min-width: 0;
+	background: var(--sd-surface);
+	border: 1px solid var(--sd-hairline);
+	border-radius: 6px;
+	padding: 10px 12px;
+}
+
+#sdDashboard .sdTileLabel {
+	color: var(--sd-ink-2);
+	font-size: 13px;
+}
+
+#sdDashboard .sdTileValue {
+	font-size: 22px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+#sdDashboard .sdTileHero .sdTileValue {
+	font-size: 34px;
+	line-height: 1.15;
+}
+
+#sdDashboard .sdTileSub {
+	color: var(--sd-muted);
+	font-size: 12px;
+}
+
+#sdDashboard .sdTilesSmall {
+	margin: 0;
+}
+
+#sdDashboard .sdTilesSmall .sdTile {
+	padding: 6px 10px;
+	border-color: var(--sd-hairline-soft);
+}
+
+#sdDashboard .sdTilesSmall .sdTileValue {
+	font-size: 17px;
+}
+
+/* ---- Controls ---- */
+
+#sdDashboard .sdChip,
+#sdDashboard .sdLinkButton,
+#sdDashboard .sdSelect {
+	font: inherit;
+	font-size: 13px;
+	color: var(--sd-ink);
+	cursor: pointer;
+	outline: none;
+}
+
+#sdDashboard .sdChip {
+	padding: 4px 12px;
+	border: 1px solid var(--sd-hairline);
+	border-radius: 14px;
+	background: var(--sd-surface);
+}
+
+#sdDashboard .sdChip:hover {
+	background: #f3eee2;
+}
+
+#sdDashboard .sdChip.sdChipActive {
+	border-color: var(--sd-accent);
+	background: var(--sd-accent);
+	color: #fff;
+}
+
+#sdDashboard .sdLinkButton {
+	flex: none;
+	padding: 2px 4px;
+	border: none;
+	background: none;
+	color: var(--sd-accent);
+	text-decoration: underline;
+}
+
+#sdDashboard .sdSelect {
+	padding: 3px 6px;
+	border: 1px solid var(--sd-hairline);
+	border-radius: 4px;
+	background: var(--sd-surface);
+}
+
+/* ---- Tables ---- */
+
+#sdDashboard .sdTable {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+#sdDashboard .sdTable th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	text-align: left;
+	font-weight: 600;
+	color: var(--sd-ink-2);
+	background: var(--sd-surface);
+	border-bottom: 1px solid var(--sd-hairline);
+	padding: 6px 8px;
+	white-space: nowrap;
+}
+
+#sdDashboard .sdTable td {
+	border-bottom: 1px solid var(--sd-hairline-soft);
+	padding: 5px 8px;
+}
+
+#sdDashboard .sdTable .sdNum {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+#sdDashboard .sdSortable {
+	cursor: pointer;
+}
+
+#sdDashboard .sdSortable:hover,
+#sdDashboard .sdSorted {
+	color: var(--sd-ink);
+}
+
+#sdDashboard .sdClickable {
+	cursor: pointer;
+}
+
+#sdDashboard .sdClickable:hover td {
+	background: #f7f1e3;
+}
+
+#sdDashboard .sdSelected td,
+#sdDashboard .sdSelected:hover td {
+	background: var(--sd-select);
+}
+
+#sdDashboard .sdTableScroll {
+	max-height: 230px;
+	overflow-y: auto;
+	background: var(--sd-surface);
+	border: 1px solid var(--sd-hairline);
+	border-radius: 6px;
+	margin-bottom: 12px;
+}
+
+#sdDashboard .sdCard > .sdTable {
+	margin-top: 10px;
+}
+
+/* ---- Text states ---- */
+
+#sdDashboard .sdPos {
+	color: var(--sd-pos);
+}
+
+#sdDashboard .sdNeg {
+	color: var(--sd-neg);
+}
+
+#sdDashboard .sdWarn {
+	color: var(--sd-warn);
+}
+
+#sdDashboard .sdGood {
+	color: var(--sd-good);
+}
+
+#sdDashboard .sdIcon {
+	font-size: 0.95em;
+}
+
+#sdDashboard .sdBadge {
+	display: inline-block;
+	margin-left: 6px;
+	padding: 0 6px;
+	border-radius: 8px;
+	background: #ece6d8;
+	color: var(--sd-ink-2);
+	font-size: 11px;
+	line-height: 17px;
+	vertical-align: 1px;
+	white-space: nowrap;
+}
+
+#sdDashboard .sdBadge-live {
+	background: #dcebf8;
+	color: var(--sd-accent);
+}
+
+#sdDashboard .sdEmpty {
+	padding: 22px 12px;
+	text-align: center;
+	color: var(--sd-muted);
+}
+
+#sdDashboard .sdNote {
+	margin: 4px 0 8px;
+	color: var(--sd-ink-2);
+	font-size: 13px;
+}
+
+#sdDashboard .sdAdvice {
+	margin-top: 10px;
+	padding-top: 8px;
+	border-top: 1px solid var(--sd-hairline-soft);
+	font-size: 13px;
+}
+
+/* ---- Charts ---- */
+
+#sdDashboard .sdChart {
+	position: relative;
+}
+
+#sdDashboard .sdChart svg {
+	display: block;
+	overflow: visible;
+}
+
+#sdDashboard .sdAxisText {
+	fill: var(--sd-muted);
+	font-size: 11px;
+	font-variant-numeric: tabular-nums;
+}
+
+#sdDashboard .sdTooltip {
+	display: none;
+	position: absolute;
+	z-index: 5;
+	pointer-events: none;
+	min-width: 120px;
+	padding: 6px 9px;
+	background: #fff;
+	border: 1px solid var(--sd-hairline);
+	border-radius: 5px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+#sdDashboard .sdTooltipTitle {
+	color: var(--sd-muted);
+	margin-bottom: 3px;
+}
+
+#sdDashboard .sdTooltipRow {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+#sdDashboard .sdTooltipName {
+	color: var(--sd-ink-2);
+}
+
+#sdDashboard .sdKeyLine,
+#sdDashboard .sdKeySwatch {
+	display: inline-block;
+	flex: none;
+}
+
+#sdDashboard .sdKeyLine {
+	width: 12px;
+	height: 2px;
+	border-radius: 1px;
+}
+
+#sdDashboard .sdKeySwatch {
+	width: 10px;
+	height: 10px;
+	border-radius: 2px;
+}
+
+#sdDashboard .sdLegend {
+	display: flex;
+	gap: 14px;
+	margin-top: 6px;
+	font-size: 12px;
+	color: var(--sd-ink-2);
+}
+
+#sdDashboard .sdLegendItem {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+/* Horizontal category bars: square at the baseline, rounded at the data end. */
+#sdDashboard .sdBarList {
+	margin-top: 8px;
+}
+
+#sdDashboard .sdBarRow {
+	display: grid;
+	grid-template-columns: 150px 1fr;
+	align-items: center;
+	gap: 8px;
+	margin: 5px 0;
+	font-size: 13px;
+}
+
+#sdDashboard .sdBarName {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#sdDashboard .sdBarTrack {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+}
+
+#sdDashboard .sdBarFill {
+	flex: none;
+	max-width: calc(100% - 110px);
+	height: 12px;
+	border-radius: 0 4px 4px 0;
+}
+
+#sdDashboard .sdBarValue {
+	color: var(--sd-ink-2);
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+/* ---- Games tab detail ---- */
+
+#sdDashboard .sdStatRow {
+	display: flex;
+	gap: 24px;
+	margin: 4px 0 10px;
+}
+
+#sdDashboard .sdStatValue {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+#sdDashboard .sdStatLabel {
+	color: var(--sd-muted);
+	font-size: 12px;
+}
+
+/* ---- Franchises tab ---- */
+
+#sdDashboard .sdFranchiseHead {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+#sdDashboard .sdFranchiseHead > :first-child {
+	flex: 1;
+	min-width: 0;
+}
+
+#sdDashboard .sdFranchiseHead .sdTiles {
+	flex: none;
+}
+
+#sdDashboard .sdSparkWrap {
+	flex: none;
+	text-align: center;
+}
+
+#sdDashboard .sdSparkLabel {
+	color: var(--sd-muted);
+	font-size: 11px;
+}
