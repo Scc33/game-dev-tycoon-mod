@@ -55,8 +55,17 @@ export async function evaluate(cdp, expression) {
 	return res.result.value;
 }
 
-export async function screenshot(cdp, file) {
-	const { data } = await cdp.send('Page.captureScreenshot', { format: 'png' });
+// clipSelector crops the capture to one element (e.g. just the dashboard window).
+export async function screenshot(cdp, file, { clipSelector, scale = 1 } = {}) {
+	const params = { format: 'png' };
+	if (clipSelector) {
+		const rect = await evaluate(
+			cdp,
+			`(() => { const r = document.querySelector(${JSON.stringify(clipSelector)}).getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; })()`,
+		);
+		params.clip = { ...rect, scale };
+	}
+	const { data } = await cdp.send('Page.captureScreenshot', params);
 	writeFileSync(file, Buffer.from(data, 'base64'));
 }
 

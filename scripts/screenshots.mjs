@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 // Capture every dashboard tab from the running game into a folder, for visual review.
 // Switches tabs inside the open window rather than reopening it, so the game stays paused.
-//   node scripts/screenshots.mjs <out-dir>
+//   node scripts/screenshots.mjs <out-dir>          full game window
+//   node scripts/screenshots.mjs <out-dir> --crop   just the dashboard (used for docs/images)
 import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 import { connect, evaluate, exitAfter, screenshot, sleep, waitFor } from './lib/cdp.mjs';
 
-const outDir = process.argv[2];
+const [outDir, flag] = process.argv.slice(2);
+const crop = flag === '--crop';
 if (!outDir) {
 	console.error('usage: screenshots.mjs <out-dir>');
 	process.exit(2);
@@ -25,7 +27,7 @@ for (const id of tabs) {
 	);
 	await sleep(700);
 	const file = path.join(outDir, `${id}.png`);
-	await screenshot(cdp, file);
+	await screenshot(cdp, file, crop ? { clipSelector: '#sdDashboard', scale: 0.6 } : {});
 	console.log(`saved ${file}`);
 }
 cdp.close();
