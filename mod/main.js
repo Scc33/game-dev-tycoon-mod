@@ -4,7 +4,14 @@
 	const SD = (globalThis.StudioDashboard = globalThis.StudioDashboard || {});
 	SD.path = GDT.getRelativePath();
 
-	const files = ['src/core.js', 'src/classify.js', 'src/ledger.js', 'src/games.js', 'src/franchises.js'];
+	const files = [
+		'src/core.js',
+		'src/classify.js',
+		'src/ledger.js',
+		'src/games.js',
+		'src/franchises.js',
+		'src/charts.js',
+	];
 
 	GDT.loadJs(
 		files.map((f) => `${SD.path}/${f}`),
