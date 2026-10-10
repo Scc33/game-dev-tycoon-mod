@@ -89,3 +89,24 @@ describe('hooks', () => {
 		assert.equal(primary.items.length, 1);
 	});
 });
+
+describe('hooks: gameplay features', () => {
+	it('installs every feature, even when one fails', () => {
+		const env = setup();
+		const installed = [];
+		const warnings = [];
+		env.SD.warn = (message) => warnings.push(message);
+		env.SD.features = {
+			broken: {
+				install() {
+					throw new Error('boom');
+				},
+			},
+			working: { install: (keys) => installed.push(keys.gameplay.weekProceeded) },
+		};
+		env.SD.hooks.install();
+		assert.deepEqual(installed, ['gameplay.weekProceeded']);
+		assert.equal(warnings.length, 1);
+		assert.match(warnings[0], /broken/);
+	});
+});

@@ -45,6 +45,16 @@
 		// A new engine is paid for under its not-yet-known name.
 		SD.classify.wrapWithCategory(GameManager, 'createEngine', 'research');
 
+		// Gameplay features (src/features/) subscribe to the events they need. One failing
+		// to install must not take the dashboard down with it.
+		Object.entries(SD.features || {}).forEach(([id, feature]) => {
+			try {
+				feature.install(keys);
+			} catch (error) {
+				SD.warn(`feature ${id} failed to install`, error);
+			}
+		});
+
 		// Enabled while a company is already running: start tracking straight away.
 		track(GameManager.company);
 	};

@@ -19,6 +19,8 @@
 		'src/games.js',
 		'src/franchises.js',
 		'src/features/franchise/model.js',
+		'src/features/franchise/series.js',
+		'src/features/franchise/effects.js',
 		'src/charts.js',
 		'src/ui/dom.js',
 		'src/ui/dashboard.js',
