@@ -91,7 +91,35 @@
 			],
 			f.entries,
 		);
-		return h('div', { class: 'sdCard' }, [head, entries, f.inDevelopment ? null : advice(f.next)]);
+		return h('div', { class: 'sdCard' }, [head, entries, f.inDevelopment ? devWarning(f) : advice(f.next)]);
+	};
+
+	const penaltyName = (combo) => `"Another ${combo} game?"`;
+
+	// The game compares every new release with the studio's latest one, not with the series.
+	const repeatWarning = (next) => {
+		if (!next.repeatsLastRelease) return null;
+		const { h, status } = SD.dom;
+		const lead =
+			next.lastRelease === next.basedOn
+				? [h('strong', { text: next.basedOn }), ' is your latest release, so']
+				: ['Your latest release, ', h('strong', { text: next.lastRelease }), `, is also ${next.combo}, so`];
+		return status('warn', 'warning-sign', [
+			...lead,
+			` a sequel with the same genre and topic released next gets the ${penaltyName(next.combo)} review penalty. Release a different game first, or change the genre or topic.`,
+		]);
+	};
+
+	const devWarning = (f) => {
+		const dev = f.entries.find((e) => e.inDevelopment && e.repeatsLastRelease);
+		if (!dev) return null;
+		const { h, status } = SD.dom;
+		return h('div', { class: 'sdAdvice' }, [
+			status('warn', 'warning-sign', [
+				h('strong', { text: dev.title }),
+				` has the same genre and topic as your latest release, so its reviews will take the ${penaltyName(SD.franchises.combo(dev))} penalty.`,
+			]),
+		]);
 	};
 
 	const advice = (next) => {
@@ -110,7 +138,11 @@
 		const engine = next.engine
 			? `Build it on an engine newer than ${next.engine}: reusing the same engine halves the sequel hype bonus, and a better one raises it.`
 			: null;
-		return h('div', { class: 'sdAdvice' }, [timing, engine ? h('div', { class: 'sdMuted', text: engine }) : null]);
+		return h('div', { class: 'sdAdvice' }, [
+			timing,
+			repeatWarning(next),
+			engine ? h('div', { class: 'sdMuted', text: engine }) : null,
+		]);
 	};
 
 	const candidatesCard = (candidates, researched) => {
@@ -130,10 +162,13 @@
 						{ name: 'Profit', cls: 'sdNum', value: (g) => money(g.profit, { signed: true }) },
 						{
 							name: 'Sequel timing',
-							value: (g) =>
-								g.next.weeksUntilSafe > 0
-									? status('warn', 'time', [`after ${fmt.date(g.next.safeFromWeek)}`])
-									: status('good', 'ok', ['ready']),
+							value: (g) => {
+								const waits = [
+									g.next.weeksUntilSafe > 0 ? `after ${fmt.date(g.next.safeFromWeek)}` : null,
+									g.next.repeatsLastRelease ? 'after a different game' : null,
+								].filter(Boolean);
+								return waits.length ? status('warn', 'time', [waits.join(' and ')]) : status('good', 'ok', ['ready']);
+							},
 						},
 					],
 					candidates,

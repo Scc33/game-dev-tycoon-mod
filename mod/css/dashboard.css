@@ -351,6 +351,15 @@
 	font-size: 13px;
 }
 
+/* One line per piece of advice. */
+#sdDashboard .sdAdvice > * {
+	display: block;
+}
+
+#sdDashboard .sdAdvice > * + * {
+	margin-top: 4px;
+}
+
 /* ---- Charts ---- */
 
 #sdDashboard .sdChart {

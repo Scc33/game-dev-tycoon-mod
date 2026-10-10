@@ -1,6 +1,6 @@
 # Phase 2 design: franchise gameplay
 
-Status: **proposal, awaiting approval.** Numbers are first guesses for play testing. Mechanics are
+Status: **approved 2026-10-10, in progress.** Numbers are first guesses for play testing. Mechanics are
 based on the research in [GAME-INTERNALS.md](../GAME-INTERNALS.md).
 
 ## What the base game does today
@@ -143,10 +143,10 @@ The Franchises tab adds, for each series:
 8. Phase 2b: remasters. They need a new option in the game-creation screen, so they get their own
    research pass.
 
-## Open questions for Sean
+## Decisions
 
-1. Should gameplay features be on by default for new saves, and for existing saves?
-2. Are the strengths right? The biggest levers are the sales range (×0.5 to ×1.25) and the
-   16-month fatigue recovery.
-3. Should fatigue eventually _replace_ the 40-week penalty (a gentler, continuous version), or sit
-   on top of it as proposed?
+1. Gameplay features are **on by default**, for new and existing saves; each can be switched off
+   per save.
+2. Strengths will be tuned by play testing. Every constant lives in one tuning table in the model.
+3. Fatigue sits on top of the 40-week penalty for now; whether it should replace it will be
+   decided after play testing.

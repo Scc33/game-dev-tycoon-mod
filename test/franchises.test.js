@@ -76,6 +76,53 @@ describe('franchises.all', () => {
 	});
 });
 
+describe('repeat genre/topic warning', () => {
+	const rpg = { genre: { name: 'RPG' }, topic: { name: 'Fantasy' } };
+
+	it('warns when the series tail is also the latest release', () => {
+		const one = makeGame({ id: 'q1', title: 'Quest', releaseWeek: 10, ...rpg });
+		const two = makeGame({ id: 'q2', title: 'Quest 2', sequelTo: 'q1', releaseWeek: 70, ...rpg });
+		const [f] = SD.franchises.all(makeCompany([one, two], { currentWeek: 120 }));
+		assert.equal(f.next.repeatsLastRelease, true);
+		assert.equal(f.next.combo, 'RPG/Fantasy');
+	});
+
+	it('clears once a different game has released since', () => {
+		const one = makeGame({ id: 'q1', title: 'Quest', releaseWeek: 10, ...rpg });
+		const two = makeGame({ id: 'q2', title: 'Quest 2', sequelTo: 'q1', releaseWeek: 70, ...rpg });
+		const other = makeGame({ id: 'x', title: 'Racer', releaseWeek: 90 });
+		const [f] = SD.franchises.all(makeCompany([one, two, other], { currentWeek: 120 }));
+		assert.equal(f.next.repeatsLastRelease, false);
+	});
+
+	it('flags a sequel in development that repeats the latest release', () => {
+		const one = makeGame({ id: 'q1', title: 'Quest', releaseWeek: 10, ...rpg });
+		const dev = makeGame({ id: 'q2', title: 'Quest 2', sequelTo: 'q1', releaseWeek: 0, ...rpg });
+		const [f] = SD.franchises.all(makeCompany([one], { currentGame: dev }));
+		assert.equal(f.entries[1].repeatsLastRelease, true);
+	});
+
+	it('never flags an expansion pack, which the game exempts', () => {
+		const one = makeGame({ id: 'q1', title: 'Quest', releaseWeek: 10, ...rpg });
+		const dev = makeGame({
+			id: 'q1x',
+			title: 'Quest: More',
+			sequelTo: 'q1',
+			releaseWeek: 0,
+			flags: { isExtensionPack: true },
+			...rpg,
+		});
+		const [f] = SD.franchises.all(makeCompany([one], { currentGame: dev }));
+		assert.equal(f.entries[1].repeatsLastRelease, false);
+	});
+
+	it('also checks sequel candidates', () => {
+		const solo = makeGame({ id: 's', title: 'Solo', releaseWeek: 10, score: 9, revenue: 300000, ...rpg });
+		const [pick] = SD.franchises.candidates(makeCompany([solo], { currentWeek: 100 }));
+		assert.equal(pick.next.repeatsLastRelease, true);
+	});
+});
+
 describe('franchises.candidates', () => {
 	it('suggests well-reviewed, profitable standalone games', () => {
 		const picks = SD.franchises.candidates(makeCompany(series(), { currentWeek: 60 }));
