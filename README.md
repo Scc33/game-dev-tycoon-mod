@@ -123,3 +123,8 @@ This mod follows Greenheart Games' Modding Agreement: it is free and non-commerc
 code or assets, and uses no real-world trademarks. Questions and bug reports:
 [GitHub issues](https://github.com/Scc33/game-dev-tycoon-mod/issues) or Sean Coughlin
 ([github.com/Scc33](https://github.com/Scc33)).
+
+## License
+
+[MIT](LICENSE) for this mod's code. Game Dev Tycoon itself and its assets belong to Greenheart Games,
+and use of the mod is also subject to their Modding Agreement.

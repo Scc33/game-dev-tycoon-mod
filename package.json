@@ -2,6 +2,7 @@
   "name": "game-dev-tycoon-studio-dashboard",
   "private": true,
   "description": "Development tooling for the Studio Dashboard mod for Game Dev Tycoon. The mod itself lives in mod/.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "test": "node --test \"test/**/*.test.js\"",
