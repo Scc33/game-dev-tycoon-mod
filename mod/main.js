@@ -17,6 +17,7 @@
 		'src/ledger.js',
 		'src/games.js',
 		'src/franchises.js',
+		'src/features/franchise/model.js',
 		'src/charts.js',
 		'src/ui/dom.js',
 		'src/ui/dashboard.js',
