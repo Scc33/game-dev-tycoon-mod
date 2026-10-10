@@ -21,8 +21,8 @@ Finance ledger, cash flow, per-game profitability and a read-only franchise view
 
 ## Phase 2: Franchise gameplay (next)
 
-Make series a real strategic choice instead of a naming convention. Candidate features, to be
-validated against the game's hype, review and sales code before building:
+Make series a real strategic choice instead of a naming convention. The proposed rules and numbers
+are in [design/phase-2-franchises.md](design/phase-2-franchises.md). Candidate features:
 
 - **Franchise reputation.** Each series builds brand value from review scores, sales and fans, and
   it fades while the series is dormant. New entries start with hype based on that reputation.
