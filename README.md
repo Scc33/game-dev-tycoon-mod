@@ -91,15 +91,15 @@ The scripts drive the running game over the Chrome DevTools Protocol:
 
 ### Layout
 
-| Path            | What it is                                                                                  |
-| --------------- | ------------------------------------------------------------------------------------------- |
-| `mod/`          | The mod itself: this folder is what gets installed or uploaded.                             |
-| `mod/src/`      | Game-free logic (`classify`, `ledger`, `games`, `franchises`, `charts`) and glue (`hooks`). |
-| `mod/src/ui/`   | Shared DOM components and the dashboard window.                                             |
-| `mod/src/tabs/` | One file per dashboard tab.                                                                 |
-| `test/`         | Unit tests (`node:test`) that run mod files in a sandbox, as the game does.                 |
-| `scripts/`      | Dev tooling; `scripts/in-game/` holds snippets evaluated inside the game.                   |
-| `docs/`         | [Architecture](docs/ARCHITECTURE.md) and [game internals](docs/GAME-INTERNALS.md) notes.    |
+| Path            | What it is                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `mod/`          | The mod itself: this folder is what gets installed or uploaded.                                                    |
+| `mod/src/`      | Game-free logic (`classify`, `ledger`, `games`, `franchises`, `charts`) and glue (`hooks`).                        |
+| `mod/src/ui/`   | Shared DOM components and the dashboard window.                                                                    |
+| `mod/src/tabs/` | One file per dashboard tab.                                                                                        |
+| `test/`         | Unit tests (`node:test`) that run mod files in a sandbox, as the game does.                                        |
+| `scripts/`      | Dev tooling; `scripts/in-game/` holds snippets evaluated inside the game.                                          |
+| `docs/`         | [Architecture](docs/ARCHITECTURE.md), [game internals](docs/GAME-INTERNALS.md) and the [roadmap](docs/ROADMAP.md). |
 
 ### Extending
 
