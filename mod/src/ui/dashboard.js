@@ -1,6 +1,6 @@
 // Studio Dashboard: the dashboard window.
 // Tabs live in src/tabs/ and declare themselves by key, in any load order:
-//   SD.tabs.myTab = { name, order, render(body, ctx) }
+//   SD.tabs.myTab = { name, order, render(body, ctx), visible?() }
 // render() appends content to body. ctx gives it the company, a per-tab state object that
 // survives re-renders, refresh(), and card(opts), which wires up chart/table toggles.
 ((SD) => {
@@ -8,9 +8,11 @@
 	const WINDOW_ID = 'sdDashboard';
 	const view = { tab: null, tables: {}, tabState: {} };
 
+	// A tab with visible() only shows while it returns true (e.g. behind a setting).
 	D.tabs = () =>
 		Object.entries(SD.tabs || {})
 			.map(([id, tab]) => ({ id, ...tab }))
+			.filter((tab) => !tab.visible || tab.visible())
 			.sort((a, b) => a.order - b.order);
 
 	const root = () => document.getElementById(WINDOW_ID);
@@ -36,10 +38,7 @@
 		UI.showModalContent(`#${WINDOW_ID}`, {
 			close: true,
 			disableCheckForNotifications: true,
-			onOpen: () => {
-				renderTabs();
-				D.refresh();
-			},
+			onOpen: () => D.refresh(),
 		});
 	};
 
@@ -64,7 +63,6 @@
 					onclick: withSound(() => {
 						if (t.id === activeTab().id) return;
 						view.tab = t.id;
-						renderTabs();
 						D.refresh({ resetScroll: true });
 					}),
 				}),
@@ -75,6 +73,7 @@
 	D.refresh = ({ resetScroll = false } = {}) => {
 		const body = root() && root().querySelector('.sdBody');
 		if (!body || !GameManager.company) return;
+		renderTabs(); // a tab's visibility can depend on settings changed since the last draw
 		const tab = activeTab();
 		const scroll = resetScroll ? 0 : body.scrollTop;
 		const cards = [];

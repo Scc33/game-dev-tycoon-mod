@@ -24,6 +24,16 @@ tells you when the next one is safe, and suggests standalone hits worth a sequel
 
 **Ledger.** The latest individual transactions, filterable by category.
 
+**Franchise gameplay** (on by default). Each series builds a brand from its review scores and grows
+tired when entries come too often or disappoint. A new sequel starts with hype from its series'
+brand, and its sales rise or fall with brand and fatigue; spin-offs (a new genre or topic) take a
+share of the brand with less fatigue. Rules and numbers:
+[docs/design/phase-2-franchises.md](docs/design/phase-2-franchises.md).
+
+**Settings.** Each gameplay feature can be switched off per save. Turning on **Developer tools**
+adds a Developer tab with cheats for testing: money, fans, research, game speed, finishing the game
+in development and made-up release history.
+
 Every chart has a **Show table** toggle, and hovering a chart shows exact values.
 
 | Overview                                  | Games                               | Franchises                                    |
@@ -88,6 +98,13 @@ The scripts drive the running game over the Chrome DevTools Protocol:
 | `node scripts/cdp.mjs eval "<js>"`                             | Evaluate JavaScript in the game                                     |
 | `node scripts/cdp.mjs evalfile scripts/in-game/demo-studio.js` | Load the demo studio (memory only; reload to discard)               |
 | `node scripts/screenshots.mjs <dir> [--crop]`                  | Capture every dashboard tab                                         |
+| `node scripts/cheat.mjs sandbox`                               | Keep this session's saves (and the release autosave) in memory      |
+| `node scripts/cheat.mjs <cheat> [args]`                        | Run a Developer-tab cheat: `cash`, `fans`, `unlock`, `speed`, ...   |
+| `node scripts/autoplay.mjs --until release`                    | Play forward to the next release; stops at any decision or error    |
+
+To test gameplay quickly: `sandbox`, build history with `addSeries`, start the game to test, then
+`autoplay`. Autoplay only dismisses informational popups and presses Finish/Release Game; it stops
+and prints any other decision instead of answering it.
 
 ### Layout
 

@@ -30,6 +30,8 @@
 		'src/tabs/franchises.js',
 		'src/tabs/ledger.js',
 		'src/tabs/settings.js',
+		'src/dev/cheats.js',
+		'src/tabs/developer.js',
 		'src/hooks.js',
 	];
 

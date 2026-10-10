@@ -551,3 +551,64 @@
 #sdDashboard .sdToggle .sdMuted {
 	display: block;
 }
+
+/* ---- Developer tab ---- */
+
+#sdDashboard .sdDevRow {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 0;
+	border-top: 1px solid var(--sd-hairline-soft);
+}
+
+#sdDashboard .sdDevRow:first-of-type {
+	border-top: 0;
+}
+
+#sdDashboard .sdDevLabel strong,
+#sdDashboard .sdDevLabel .sdMuted {
+	display: block;
+}
+
+#sdDashboard .sdDevButtons,
+#sdDashboard .sdDevForm {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+}
+
+#sdDashboard .sdDevForm {
+	gap: 12px;
+}
+
+#sdDashboard .sdDevButton {
+	padding: 4px 10px;
+	border: 1px solid var(--sd-hairline);
+	border-radius: 4px;
+	background: var(--sd-surface);
+	color: var(--sd-ink);
+	font: inherit;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+#sdDashboard .sdDevButton:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+#sdDashboard .sdDevInput {
+	width: 140px;
+	padding: 3px 6px;
+	border: 1px solid var(--sd-hairline);
+	border-radius: 4px;
+	font: inherit;
+	font-size: 13px;
+}
+
+#sdDashboard .sdDevInput.sdDevShort {
+	width: 60px;
+}

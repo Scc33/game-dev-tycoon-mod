@@ -64,6 +64,26 @@ observations in our own words; no game code is reproduced. The game's code ships
   penalty doubled); a higher-tech engine sets `flags.hasBetterEngineThanSequel` (bonus ×1.2, penalty
   turned positive).
 
+## Development and release flow
+
+- A finished game waits for the player: the **Finish** button (`#releaseButton`) appears once the
+  game is ready, and a "… is ready!" decision then offers Release Game or Trash Game. Until then
+  the game sits in its finishing phase indefinitely, slowly **losing hype** (a point at a time)
+  while monthly costs keep coming.
+- Picking a sequel fills in the predecessor's genre, topic, audience and size before the concept
+  window opens. The concept is only valid if the studio owns the topic.
+- Time does not advance while a modal window is open, so a `weekProceeded` handler never sees a
+  half-finished concept.
+- The game autosaves (slot `auto`) after a release, a finished research, training or engine, and
+  when the window closes.
+- Game speed is `GameManager._timeModifier` (1 = normal; the settings use 0.5, 1 and 2.5, and
+  debug builds also allow 10 and 100).
+- Sudden wealth triggers the "New Office?" decision; running out of money triggers bank offers and
+  then bankruptcy, which ends the game.
+- jQuery 1.7's `.click()` runs inline `onclick` handlers twice (once itself, once through the
+  native click it triggers). Automation should call the element's own `click()` for buttons with
+  side effects.
+
 ## Release order
 
 Releasing a game runs, in order: `beforeReleaseGame`, the release week is set, the review

@@ -5,12 +5,18 @@ import globals from 'globals';
 const gameGlobals = {
 	$: 'readonly',
 	DataStore: 'readonly',
+	Game: 'readonly',
+	GameGenre: 'readonly',
 	GameManager: 'readonly',
+	GameState: 'readonly',
 	GDT: 'readonly',
 	Logger: 'readonly',
 	Missions: 'readonly',
+	Platforms: 'readonly',
 	Research: 'readonly',
+	Sales: 'readonly',
 	Sound: 'readonly',
+	Topics: 'readonly',
 	Training: 'readonly',
 	UI: 'readonly',
 };
