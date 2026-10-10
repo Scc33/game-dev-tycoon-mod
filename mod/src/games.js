@@ -27,7 +27,8 @@
 			revenue,
 			costs,
 			profit: revenue - costs,
-			roi: costs > 0 ? (revenue - costs) / costs : null,
+			// No ROI until a game has sold for a week: a fresh release would read as -100%.
+			roi: costs > 0 && (weekly.length > 0 || game.soldOut) ? (revenue - costs) / costs : null,
 			units: game.unitsSold || 0,
 			weekly,
 			peakWeek: peak,

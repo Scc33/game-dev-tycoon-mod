@@ -21,8 +21,9 @@
 	// ---- Pure helpers ----
 
 	// Round tick values: 0 / 2K / 4K rather than 0 / 1.7K / 3.4K. Always includes 0 when the
-	// range spans it, so bars have a baseline.
-	C.niceTicks = (min, max, count) => {
+	// range spans it, so bars have a baseline. minStep stops whole-number data (money, weeks)
+	// getting fractional ticks that would print as duplicates.
+	C.niceTicks = (min, max, count, minStep = 0) => {
 		if (min === max) max = min + 1;
 		const raw = (max - min) / count;
 		let step = 10 ** Math.floor(Math.log10(raw));
@@ -30,6 +31,7 @@
 		if (err >= 7.5) step *= 10;
 		else if (err >= 3.5) step *= 5;
 		else if (err >= 1.5) step *= 2;
+		step = Math.max(step, minStep);
 		const ticks = [];
 		for (let v = Math.floor(min / step) * step; v <= Math.ceil(max / step) * step + step / 2; v += step) {
 			ticks.push(Math.round(v / step) * step);
@@ -178,7 +180,7 @@
 		const { rows } = opts;
 		const series = opts.bars.concat(opts.line ? [opts.line] : []);
 		const values = rows.flatMap((r) => series.map((s) => s.value(r)));
-		const ticks = C.niceTicks(Math.min(0, ...values), Math.max(0, ...values), 4);
+		const ticks = C.niceTicks(Math.min(0, ...values), Math.max(0, ...values), 4, 1);
 		const y = yScale(f, ticks);
 		const band = f.plotW / Math.max(1, rows.length);
 		const xCenter = (i) => MARGIN.left + band * (i + 0.5);
@@ -245,7 +247,7 @@
 		const f = frame(el, opts.height || 200);
 		const pts = opts.points;
 		const ys = pts.map((p) => p.y).concat(opts.reference ? [opts.reference.value] : []);
-		const ticks = C.niceTicks(Math.min(0, ...ys), Math.max(...ys), 4);
+		const ticks = C.niceTicks(Math.min(0, ...ys), Math.max(...ys), 4, 1);
 		const y = yScale(f, ticks);
 		const x0 = pts[0].x;
 		const x1 = pts[pts.length - 1].x;

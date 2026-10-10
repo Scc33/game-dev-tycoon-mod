@@ -32,6 +32,8 @@
 
 	SD.monthIndex = (week) => Math.floor(Math.floor(week) / SD.WEEKS_PER_MONTH);
 
+	const groupDigits = (n) => `${n < 0 ? '−' : ''}${String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+
 	const oneDecimal = (v) => {
 		const r = Math.round(v * 10) / 10;
 		return r % 1 === 0 ? r.toFixed(0) : r.toFixed(1);
@@ -62,13 +64,15 @@
 			return (n > 0 ? '+' : '') + SD.fmt.money(n);
 		},
 
+		// The game replaces Number.prototype.toLocaleString with a two-decimal version, so
+		// group digits by hand.
 		int(n) {
-			return Math.round(n).toLocaleString('en-US');
+			return groupDigits(Math.round(n));
 		},
 
 		percent(ratio) {
 			if (ratio === null || ratio === undefined || Number.isNaN(ratio)) return '–';
-			return `${Math.round(ratio * 100).toLocaleString('en-US')}%`;
+			return `${groupDigits(Math.round(ratio * 100))}%`;
 		},
 
 		score(score) {

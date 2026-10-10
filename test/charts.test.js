@@ -17,6 +17,11 @@ describe('charts.niceTicks', () => {
 		assert.ok(ticks[ticks.length - 1] >= 90000);
 	});
 
+	it('never steps below minStep', () => {
+		assert.deepEqual(plain(SD.charts.niceTicks(0, 0, 4, 1)), [0, 1]);
+		assert.deepEqual(plain(SD.charts.niceTicks(0, 3, 4, 1)), [0, 1, 2, 3]);
+	});
+
 	it('copes with a flat range', () => {
 		const ticks = SD.charts.niceTicks(5, 5, 4);
 		assert.ok(ticks.length >= 2);

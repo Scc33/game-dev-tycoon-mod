@@ -9,6 +9,7 @@
 		const currentMonth = SD.monthIndex(company.currentWeek);
 		const net12 = SD.ledger.monthly(d, currentMonth - 11, currentMonth).reduce((s, r) => s + r.net, 0);
 		const coversYear = d.since <= (currentMonth - 11) * SD.WEEKS_PER_MONTH;
+		const hasLedger = Object.keys(d.months).length > 0;
 		const games = summary.released === 1 ? 'game' : 'games';
 
 		body.appendChild(
@@ -16,8 +17,8 @@
 				tile('Cash', fmt.money(company.cash), `${fmt.int(company.fans)} fans`, { hero: true }),
 				tile(
 					'Net profit, last 12 months',
-					fmt.signedMoney(net12),
-					coversYear ? 'All income minus all costs' : `Since ${fmt.date(d.since)}`,
+					hasLedger ? fmt.signedMoney(net12) : '–',
+					coversYear ? 'All income minus all costs' : `Recording since ${fmt.date(d.since)}`,
 				),
 				tile(
 					'Game revenue, all time',

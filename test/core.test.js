@@ -39,6 +39,24 @@ describe('fmt', () => {
 		assert.equal(SD.fmt.score(4.29), '4.3');
 		assert.equal(SD.fmt.score(0), '–');
 		assert.equal(SD.fmt.percent(0.584), '58%');
+		assert.equal(SD.fmt.percent(-1), '−100%');
+		assert.equal(SD.fmt.int(1234567.4), '1,234,567');
 		assert.equal(SD.fmt.percent(null), '–');
+	});
+});
+
+describe('fmt inside the game', () => {
+	// The game replaces toLocaleString with one that always prints two decimals.
+	const inGame = loadMod(
+		['src/core.js'],
+		{},
+		{
+			prelude: 'Number.prototype.toLocaleString = function () { return this.toFixed(2); };',
+		},
+	);
+
+	it('does not depend on Number.prototype.toLocaleString', () => {
+		assert.equal(inGame.fmt.int(1234), '1,234');
+		assert.equal(inGame.fmt.percent(0.58), '58%');
 	});
 });

@@ -55,7 +55,11 @@
 					{ name: 'Expenses', color: colors.expenses },
 					{ name: 'Net', color: colors.net, line: true },
 				]),
-				chart: (el) =>
+				chart: (el) => {
+					if (!rows.some((r) => r.income || r.expenses)) {
+						el.appendChild(empty('No cash movements recorded in this period yet. Let a few in-game weeks pass.'));
+						return;
+					}
 					SD.charts.columns(el, {
 						rows,
 						label: (r) => fmt.month(r.month),
@@ -72,7 +76,8 @@
 						line: { name: 'Net', color: colors.net, value: (r) => r.net, tooltipFormat: fmt.signedMoney },
 						format: fmt.money,
 						height: 230,
-					}),
+					});
+				},
 				table: () =>
 					table(
 						[

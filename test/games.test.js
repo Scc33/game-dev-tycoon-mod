@@ -23,6 +23,12 @@ describe('games.stats', () => {
 		assert.ok(flop.roi < 0);
 	});
 
+	it('holds back ROI for a release that has not sold yet', () => {
+		const fresh = SD.games.stats(makeGame({ costs: 26000, revenue: 0, salesCashLog: [], soldOut: false }));
+		assert.equal(fresh.roi, null);
+		assert.equal(fresh.profit, -26000);
+	});
+
 	it('reads flags, names and the second genre', () => {
 		const s = SD.games.stats(
 			makeGame({
