@@ -523,3 +523,31 @@
 	color: var(--sd-muted);
 	font-size: 11px;
 }
+
+/* ---- Settings ---- */
+
+#sdDashboard .sdToggle {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+	padding: 8px 0;
+	border-top: 1px solid var(--sd-hairline-soft);
+	cursor: pointer;
+}
+
+#sdDashboard .sdToggle:first-of-type {
+	border-top: 0;
+}
+
+#sdDashboard .sdToggle input {
+	width: 18px;
+	height: 18px;
+	margin: 2px 0 0;
+	flex: none;
+	cursor: pointer;
+}
+
+#sdDashboard .sdToggle strong,
+#sdDashboard .sdToggle .sdMuted {
+	display: block;
+}

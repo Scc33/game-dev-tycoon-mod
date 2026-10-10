@@ -33,6 +33,13 @@ describe('ledger', () => {
 		assert.deepEqual(plain(d.months), {});
 	});
 
+	it('keeps other features’ data when it starts up', () => {
+		store.data = { settings: { 'franchise.hype': false } };
+		const d = SD.ledger.state(company);
+		assert.equal(d.since, 10);
+		assert.deepEqual(plain(d.settings), { 'franchise.hype': false });
+	});
+
 	it('aggregates movements per month and category', () => {
 		SD.ledger.record(company, { amount: 1200, label: 'MacMan sales' });
 		SD.ledger.record(company, { amount: 800, label: 'MacMan sales' });

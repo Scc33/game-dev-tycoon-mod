@@ -13,6 +13,7 @@
 	// call time, and tabs register by key on SD.tabs.
 	const scripts = [
 		'src/core.js',
+		'src/settings.js',
 		'src/classify.js',
 		'src/ledger.js',
 		'src/games.js',
@@ -26,6 +27,7 @@
 		'src/tabs/games.js',
 		'src/tabs/franchises.js',
 		'src/tabs/ledger.js',
+		'src/tabs/settings.js',
 		'src/hooks.js',
 	];
 

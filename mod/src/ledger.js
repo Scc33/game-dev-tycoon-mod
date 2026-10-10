@@ -19,9 +19,11 @@
 		snaps: [], // [week, cash, fans], one per week
 	});
 
+	// The ledger owns the top level of the mod data; other features keep their own keys in
+	// it (settings, franchise), which survive the ledger starting up.
 	L.state = (company) => {
 		const store = SD.getStore();
-		if (!store.data || !store.data.v) store.data = L.emptyState(company);
+		if (!store.data || !store.data.v) store.data = { ...store.data, ...L.emptyState(company) };
 		return store.data;
 	};
 
