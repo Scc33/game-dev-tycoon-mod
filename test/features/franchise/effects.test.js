@@ -6,12 +6,14 @@ import { loadMod, plain } from '../../helpers/load-mod.js';
 const FILES = [
 	'src/core.js',
 	'src/settings.js',
+	'src/classify.js',
 	'src/games.js',
 	'src/franchises.js',
 	'src/features/franchise/model.js',
 	'src/features/franchise/store.js',
 	'src/features/franchise/series.js',
 	'src/features/franchise/effects.js',
+	'src/features/franchise/events.js',
 ];
 
 function setup() {
@@ -28,6 +30,7 @@ function setup() {
 		GDT: {
 			getDataStore: () => store,
 			on: (key, fn) => (handlers[key] = handlers[key] || []).push(fn),
+			addEvent: () => {},
 		},
 		Notification,
 	});
@@ -81,6 +84,7 @@ describe('franchise effects: launch hype', () => {
 		assert.deepEqual(plain(env.store.data.franchise.applied.q3), {
 			kind: 'mainline',
 			hype: 140,
+			promised: 0,
 			hypeWeek: 120,
 			hypeBrand: 69.8,
 			hypeFatigue: 0,

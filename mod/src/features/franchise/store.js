@@ -5,7 +5,7 @@
 //     applied: { [gameId]: { kind, hype, promised, hypeWeek, hypeBrand, hypeFatigue,
 //                            sales, baseSales, salesBrand, salesFatigue } },
 //     events: [{ type, series, week, ...details }],   fan events and their consequences
-//     offer: { type, series, week, ... } | null,      a fan event waiting for the player
+//     offers: { [type]: { series, name, key, week, ... } },   fan events awaiting a choice
 //     lastEventWeek: number,
 //   }
 //

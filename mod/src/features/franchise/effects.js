@@ -52,29 +52,37 @@
 	};
 
 	// Once the concept of a sequel is set (it has a genre and topic), add hype from its
-	// series' brand, once.
+	// series' brand, plus any hype a fan event promised for it, once. Weeks don't pass while
+	// the concept window is open, so the concept is final by the time this runs.
 	E.launchHype = (company) => {
 		const game = company && company.currentGame;
 		if (!game || !game.sequelTo || !game.genre || !game.topic) return null;
-		if (!enabled('franchise.hype')) return null;
 		const done = F.store.applied(game.id);
 		if (done && done.hype !== undefined) return null;
 		const dev = F.series.development(company);
 		if (!dev || dev.kind === F.model.KINDS.pack) return null;
+		const promise = enabled('franchise.events') ? F.store.openPromise(dev.series.id) : null;
+		if (!enabled('franchise.hype') && !promise) return null;
 
 		const state = F.series.state(dev.series, company.currentWeek, { fatigue: enabled('franchise.fatigue') });
-		const { hype } = F.model.effects(state, dev.kind);
-		game.hypePoints = (game.hypePoints || 0) + hype;
-		if (hype > 0) {
+		const hype = enabled('franchise.hype') ? F.model.effects(state, dev.kind).hype : 0;
+		const promised = promise ? promise.hype : 0;
+		if (promise) {
+			promise.status = 'kept';
+			promise.keptBy = game.id;
+		}
+		game.hypePoints = (game.hypePoints || 0) + hype + promised;
+		if (hype + promised > 0) {
 			const kind = dev.kind === F.model.KINDS.spinoff ? 'spin-off' : 'sequel';
 			notify(
 				company,
-				`Fans of the ${dev.series.name} series are excited about the new ${kind}, ${game.title}.\n(+${hype} hype)`,
+				`Fans of the ${dev.series.name} series are excited about the new ${kind}, ${game.title}.\n(+${hype + promised} hype${promised ? `, ${promised} of it for keeping our promise` : ''})`,
 			);
 		}
 		return record(game.id, {
 			kind: dev.kind,
 			hype,
+			promised,
 			hypeWeek: company.currentWeek,
 			hypeBrand: round1(state.brand),
 			hypeFatigue: round1(state.fatigue),
@@ -109,6 +117,7 @@
 
 	E.onWeek = (company) => {
 		E.launchHype(company);
+		F.events.onWeek(company);
 	};
 
 	// A failing effect is logged and skipped; it must never break the game's own flow.
@@ -129,6 +138,7 @@
 			keys.gameplay.salesCalculated,
 			guarded('sales effect', (e) => E.releaseSales(e.company, e.game)),
 		);
+		F.events.install();
 	};
 
 	SD.features = SD.features || {};

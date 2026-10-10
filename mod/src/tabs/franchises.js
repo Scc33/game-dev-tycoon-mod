@@ -12,7 +12,9 @@
 	// "+117 hype, sales ×1.08", leaving out effects that are switched off.
 	const effectText = (fx) =>
 		[
-			on('franchise.hype') && fx.hype !== undefined ? `+${fx.hype} hype` : null,
+			fx.hype !== undefined && (on('franchise.hype') || fx.promised)
+				? `+${fx.hype + (fx.promised || 0)} hype${fx.promised ? ` (${fx.promised} promised)` : ''}`
+				: null,
 			on('franchise.sales') && fx.sales !== undefined ? `sales ×${fx.sales.toFixed(2)}` : null,
 		]
 			.filter(Boolean)
@@ -124,6 +126,9 @@
 		]);
 	};
 
+	const promiseText = (name, promise) =>
+		`We promised fans a new ${name} game: start it before ${SD.fmt.date(promise.due)} for +${promise.hype} hype, or the series loses ${-promise.penalty} brand.`;
+
 	// Brand, fatigue and what the next entry would get, when franchise gameplay is on.
 	const health = (f, company) => {
 		if (!gameplayOn()) return null;
@@ -133,6 +138,8 @@
 		const o = SD.franchise.series.outlook(f, company.currentWeek, { fatigue: fatigueOn });
 
 		const lines = [];
+		const promise = on('franchise.events') ? SD.franchise.store.openPromise(f.id) : null;
+		if (promise) lines.push(promiseText(f.name, promise));
 		const dev = f.entries.find((e) => e.inDevelopment);
 		if (dev) {
 			const kind = SD.franchise.series.kindOf(f, dev);
@@ -234,6 +241,8 @@
 						{
 							name: 'Sequel timing',
 							value: (g) => {
+								const promise = on('franchise.events') ? SD.franchise.store.openPromise(g.id) : null;
+								if (promise) return status('warn', 'time', [`promised: start before ${fmt.date(promise.due)}`]);
 								const waits = [
 									g.next.weeksUntilSafe > 0 ? `after ${fmt.date(g.next.safeFromWeek)}` : null,
 									g.next.repeatsLastRelease ? 'after a different game' : null,

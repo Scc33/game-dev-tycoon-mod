@@ -1,6 +1,6 @@
 # Phase 2 design: franchise gameplay
 
-Status: **approved 2026-10-10, in progress.** Numbers are first guesses for play testing. Mechanics are
+Status: **approved and built 2026-10-10; numbers under play testing.** Numbers are first guesses for play testing. Mechanics are
 based on the research in [GAME-INTERNALS.md](../GAME-INTERNALS.md).
 
 ## What the base game does today
@@ -87,11 +87,17 @@ in the market between mainline entries.
 These are non-random events (`GDT.addEvent`) with our own triggers. At most one franchise event
 fires per year, so they stay occasional.
 
-| Event                   | Trigger                                                                       | Choices                                                                                                                                                   |
-| ----------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Fans want more**      | latest entry scored ≥ 8.5, released 6–24 months ago, no sequel in development | _Tease a sequel_: the next entry gets +50 hype, but brand −5 if none ships within 2 years. _No comment_: nothing happens.                                 |
-| **Anniversary**         | 10 years since the series began, brand ≥ 40                                   | _Celebrate_ (costs 2% of the series' lifetime revenue): brand +10, fans +2%. _Let it pass_: nothing happens.                                              |
-| **Where's the sequel?** | brand ≥ 60, no entry for 4 years                                              | _Promise a return_: the next entry gets +100 hype and dormancy fade pauses for 2 years; breaking the promise costs brand −15. _Move on_: nothing happens. |
+| Event                   | Trigger                                                                       | Choices                                                                                                                                              |
+| ----------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Fans want more**      | latest entry scored ≥ 8.5, released 6–24 months ago, no sequel in development | _Tease a sequel_: the next entry gets +50 hype, but brand −5 if none is under way within 2 years. _No comment_: nothing happens.                     |
+| **Anniversary**         | 10 years since the series began, brand ≥ 40                                   | _Celebrate_ (costs 2% of the series' lifetime revenue): brand +10, fans +2%. _Let it pass_: nothing happens.                                         |
+| **Where's the sequel?** | brand ≥ 60, no entry for 4 years                                              | _Promise a return_: the next entry gets +100 hype; breaking the promise (none under way within 2 years) costs brand −15. _Move on_: nothing happens. |
+
+As built: standalone games count as a series of one (only a 10/10 stays loved enough for "Where's
+the sequel?"). Each event asks once per entry or series; a refusal is remembered. A promise is kept
+as soon as the next entry starts development. The idea of pausing the brand fade after a promise
+was dropped to keep the rules simple. Anniversaries are only offered when the studio can afford
+twice the cost, and the cost is filed under marketing.
 
 ## Settings
 

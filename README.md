@@ -27,7 +27,9 @@ tells you when the next one is safe, and suggests standalone hits worth a sequel
 **Franchise gameplay** (on by default). Each series builds a brand from its review scores and grows
 tired when entries come too often or disappoint. A new sequel starts with hype from its series'
 brand, and its sales rise or fall with brand and fatigue; spin-offs (a new genre or topic) take a
-share of the brand with less fatigue. Rules and numbers:
+share of the brand with less fatigue. Now and then fans ask for a sequel, celebrate a series' tenth
+anniversary or petition for a dormant one, with choices that trade money or promises for brand.
+Rules and numbers:
 [docs/design/phase-2-franchises.md](docs/design/phase-2-franchises.md).
 
 **Settings.** Each gameplay feature can be switched off per save. Turning on **Developer tools**

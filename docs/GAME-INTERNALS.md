@@ -157,6 +157,11 @@ appended to `gameLog`, then `afterReleaseGame`.
 - The official modAPI example sets `isRandom`, but the game reads `isRandomEvent`, so that example
   actually behaves as a non-random event.
 - `maxTriggers` is enforced through `company.eventTriggerCounts`, which is saved.
+- The game evaluates every event's `trigger` before building any notification, so two events can
+  fire in the same pass. `{n}` in a notification's text splits it into screens; the options belong
+  to the last one. A decision's buttons only respond once its text has finished typing out.
+- `complete(decision)` gets the option index. Show a follow-up at once with
+  `company.activeNotifications.addRange(new Notification({...}).split())`.
 - The modAPI has no settings-tab API (`GDT.addEvent`, `addPlatform`, `addResearchItem`,
   `addTopics` and `getDataStore` are the whole surface besides events and loading).
 - `game.flags` is saved as-is, but per-save mod state belongs in the data store.
