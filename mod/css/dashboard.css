@@ -172,6 +172,10 @@
 	border-color: var(--sd-hairline-soft);
 }
 
+#sdDashboard .sdTilesSmall .sdTileLabel {
+	white-space: nowrap;
+}
+
 #sdDashboard .sdTilesSmall .sdTileValue {
 	font-size: 17px;
 }
@@ -433,7 +437,7 @@
 
 #sdDashboard .sdBarRow {
 	display: grid;
-	grid-template-columns: 150px 1fr;
+	grid-template-columns: 180px 1fr;
 	align-items: center;
 	gap: 8px;
 	margin: 5px 0;

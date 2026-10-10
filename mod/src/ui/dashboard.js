@@ -30,10 +30,12 @@
 	D.open = (tabId) => {
 		D.install();
 		if (tabId) view.tab = tabId;
-		// showModalContent waits for pending notifications, pauses the game while open and
-		// adds the standard close button.
+		// Open straight away like the game's Game History window, rather than queueing behind
+		// pending notifications (which never show while the player has paused). The game stays
+		// paused while the window is open and resumes, notifications included, on close.
 		UI.showModalContent(`#${WINDOW_ID}`, {
 			close: true,
+			disableCheckForNotifications: true,
 			onOpen: () => {
 				renderTabs();
 				D.refresh();
