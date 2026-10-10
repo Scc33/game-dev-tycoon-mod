@@ -3,8 +3,12 @@
 	const H = (SD.hooks = {});
 	let installed = false;
 
+	// Hook the company's cash log and start the ledger now, so the reconciliation baseline is
+	// the balance at attach time rather than at the first recorded movement.
 	const track = (company) => {
-		if (company) SD.ledger.attach(company);
+		if (!company) return;
+		SD.ledger.attach(company);
+		SD.ledger.state(company);
 	};
 
 	H.menuItem = () => ({
@@ -28,10 +32,7 @@
 			if (!modData || !modData[SD.MOD_ID]) SD.getStore().data = {};
 		});
 		GDT.on(keys.saves.loaded, () => track(GameManager.company));
-		GDT.on(keys.saves.newGame, () => {
-			track(GameManager.company);
-			SD.ledger.state(GameManager.company);
-		});
+		GDT.on(keys.saves.newGame, () => track(GameManager.company));
 		GDT.on(keys.gameplay.weekProceeded, (e) => {
 			const company = (e && e.company) || GameManager.company;
 			track(company);
