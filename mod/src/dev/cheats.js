@@ -74,11 +74,15 @@
 
 	const byName = (list, name, fallback) => list.find((x) => x.name === name) || fallback;
 
+	const tooEarly = (week) =>
+		`That history would start ${-week} weeks before the company was founded. Use smaller gaps, a shorter "ago", or a later save.`;
+
 	// A finished, sold-out game added to the release history, for testing anything that reads
 	// history (franchises, reviews, charts) without playing it. Built from the game's own
 	// Game class so every field the game expects is present.
 	D.addGame = ({ title, score = 7, week, sequelTo = null, genre, topic, size = 'small', revenue, costs } = {}) => {
 		const c = company();
+		if (week !== undefined && week < 0) throw new Error(tooEarly(week));
 		// The Game constructor hands any pending conference hype to the new game; keep it.
 		const conferenceHype = c.conferenceHype;
 		const game = new Game(c);
@@ -129,6 +133,7 @@
 	} = {}) => {
 		const span = entries.slice(1).reduce((sum, e) => sum + (e.gap || 0), 0);
 		let week = Math.floor(company().currentWeek) - ago - span;
+		if (week < 0) throw new Error(tooEarly(week));
 		let previous = null;
 		return entries.map((entry, i) => {
 			if (i > 0) week += entry.gap || 0;

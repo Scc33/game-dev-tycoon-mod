@@ -34,6 +34,24 @@
 		return fatigue ? state : { ...state, fatigue: 0 };
 	};
 
+	// What the dashboard shows for a series at `week`: brand and fatigue with their labels,
+	// how long until fatigue has worn off, and what a mainline sequel or a spin-off released
+	// then would get.
+	S.outlook = (series, week, { fatigue = true } = {}) => {
+		const M = F.model;
+		const state = S.state(series, week, { fatigue });
+		return {
+			brand: state.brand,
+			fatigue: state.fatigue,
+			brandLabel: M.brandLabel(state.brand),
+			fatigueLabel: M.fatigueLabel(state.fatigue),
+			restedInWeeks: Math.ceil((state.fatigue / M.TUNING.fatigueRecoveryPerMonth) * SD.WEEKS_PER_MONTH),
+			mainline: M.effects(state, M.KINDS.mainline),
+			spinoff: M.effects(state, M.KINDS.spinoff),
+			brandHistory: state.history.map((point) => point.after.brand),
+		};
+	};
+
 	// The game in development, if it continues a series: { series, entry, kind }.
 	S.development = (company) => {
 		const series = SD.franchises.all(company).find((f) => f.inDevelopment);

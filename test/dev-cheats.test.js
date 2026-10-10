@@ -101,6 +101,15 @@ describe('developer cheats', () => {
 		assert.equal(c.sequelTo, b.id);
 	});
 
+	it('refuses history from before the company was founded', () => {
+		assert.throws(() => env.SD.dev.addGame({ week: -5 }), /5 weeks before the company was founded/);
+		assert.throws(
+			() => env.SD.dev.addSeries({ entries: [{ score: 8 }, { score: 8, gap: 400 }], ago: 0 }),
+			/100 weeks before/,
+		);
+		assert.equal(env.company.gameLog.length, 0);
+	});
+
 	it('keeps the release history in order', () => {
 		env.SD.dev.addGame({ title: 'Later', week: 200 });
 		env.SD.dev.addGame({ title: 'Earlier', week: 100 });

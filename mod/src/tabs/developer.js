@@ -12,7 +12,11 @@
 					class: 'sdDevButton',
 					disabled: disabled ? 'disabled' : null,
 					onclick: withSound(() => {
-						state.last = action();
+						try {
+							state.last = action();
+						} catch (error) {
+							state.last = error.message;
+						}
 						refresh();
 					}),
 				},

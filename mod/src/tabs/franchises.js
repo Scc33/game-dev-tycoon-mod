@@ -5,6 +5,19 @@
 
 	const signedScore = (delta) => `${delta > 0 ? '+' : delta < 0 ? '−' : '±'}${Math.abs(delta).toFixed(1)}`;
 
+	// Franchise gameplay (src/features/franchise) and its per-save switches.
+	const on = (id) => SD.settings.get(id) !== false;
+	const gameplayOn = () => on('franchise.hype') || on('franchise.sales');
+
+	// "+117 hype, sales ×1.08", leaving out effects that are switched off.
+	const effectText = (fx) =>
+		[
+			on('franchise.hype') && fx.hype !== undefined ? `+${fx.hype} hype` : null,
+			on('franchise.sales') && fx.sales !== undefined ? `sales ×${fx.sales.toFixed(2)}` : null,
+		]
+			.filter(Boolean)
+			.join(', ');
+
 	const render = (body, { company }) => {
 		const { h, panel } = SD.dom;
 		const franchises = SD.franchises.all(company);
@@ -23,14 +36,16 @@
 				]),
 			);
 		}
-		franchises.forEach((f) => body.appendChild(franchiseCard(f)));
+		franchises.forEach((f) => body.appendChild(franchiseCard(f, company)));
 		const candidates = SD.franchises.candidates(company, 5);
 		if (candidates.length) body.appendChild(candidatesCard(candidates, sequelsResearched(company)));
 	};
 
-	const franchiseCard = (f) => {
+	const franchiseCard = (f, company) => {
 		const { h, tile, tiles, table, badge, money, status } = SD.dom;
 		const fmt = SD.fmt;
+		const kindOf = (e) => SD.franchise.series.kindOf(f, e);
+		const applied = (e) => SD.franchise.effects.applied(e.id);
 		const head = h('div', { class: 'sdFranchiseHead' }, [
 			h('div', {}, [
 				h('div', { class: 'sdCardTitle', text: `${f.name} series` }),
@@ -64,6 +79,7 @@
 						h('span', {}, [
 							e.title,
 							e.isPack ? badge('Pack') : null,
+							!e.isPack && kindOf(e) === 'spinoff' ? badge('Spin-off') : null,
 							e.inDevelopment ? badge('In development', 'live') : null,
 						]),
 				},
@@ -88,10 +104,65 @@
 						return e.engine;
 					},
 				},
-			],
+				gameplayOn()
+					? {
+							name: 'Franchise effect',
+							value: (e) => {
+								const fx = applied(e);
+								return (fx && effectText(fx)) || '–';
+							},
+						}
+					: null,
+			].filter(Boolean),
 			f.entries,
 		);
-		return h('div', { class: 'sdCard' }, [head, entries, f.inDevelopment ? devWarning(f) : advice(f.next)]);
+		return h('div', { class: 'sdCard' }, [
+			head,
+			health(f, company),
+			entries,
+			f.inDevelopment ? devWarning(f) : advice(f.next),
+		]);
+	};
+
+	// Brand, fatigue and what the next entry would get, when franchise gameplay is on.
+	const health = (f, company) => {
+		if (!gameplayOn()) return null;
+		const { h, meter } = SD.dom;
+		const colors = SD.charts.colors;
+		const fatigueOn = on('franchise.fatigue');
+		const o = SD.franchise.series.outlook(f, company.currentWeek, { fatigue: fatigueOn });
+
+		const lines = [];
+		const dev = f.entries.find((e) => e.inDevelopment);
+		if (dev) {
+			const kind = SD.franchise.series.kindOf(f, dev);
+			const fx = SD.franchise.effects.applied(dev.id);
+			if (fx && fx.hype !== undefined && on('franchise.hype'))
+				lines.push(`${dev.title} started development with +${fx.hype} hype from the series.`);
+			if (on('franchise.sales') && kind !== 'pack')
+				lines.push(`Released now, it would sell ×${o[kind].sales.toFixed(2)}.`);
+		} else {
+			lines.push(`A sequel released now: ${effectText(o.mainline)}.`);
+			lines.push(`A spin-off (new genre or topic): ${effectText(o.spinoff)}.`);
+		}
+		if (fatigueOn && o.restedInWeeks > 0)
+			lines.push(`Fatigue wears off by ${SD.fmt.date(company.currentWeek + o.restedInWeeks)}.`);
+
+		return h('div', { class: 'sdHealth' }, [
+			meter('Brand', o.brand, o.brandLabel, colors.income),
+			fatigueOn ? meter('Fatigue', o.fatigue, o.fatigueLabel, colors.expenses) : null,
+			o.brandHistory.length > 1
+				? h('div', { class: 'sdSparkWrap' }, [
+						SD.charts.spark(o.brandHistory, { min: 0, max: 100 }),
+						h('div', { class: 'sdSparkLabel', text: 'Brand by release' }),
+					])
+				: null,
+			h(
+				'div',
+				{ class: 'sdOutlook' },
+				lines.map((text) => h('div', { text })),
+			),
+		]);
 	};
 
 	const penaltyName = (combo) => `"Another ${combo} game?"`;

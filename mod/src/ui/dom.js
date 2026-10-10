@@ -164,5 +164,38 @@
 			...children,
 		]);
 
-	SD.dom = { h, withSound, icon, empty, note, badge, status, tile, tiles, legend, money, table, barList, card, panel };
+	// A 0–100 gauge with its value and a word for it; the words carry the meaning, the bar
+	// colour only identifies which gauge it is.
+	const meter = (label, value, words, color) =>
+		h('div', { class: 'sdMeter' }, [
+			h('div', { class: 'sdMeterHead' }, [
+				h('span', { class: 'sdTileLabel', text: label }),
+				h('span', { class: 'sdMeterValue', text: `${Math.round(value)} · ${words}` }),
+			]),
+			h('div', { class: 'sdMeterTrack' }, [
+				h('div', {
+					class: 'sdMeterFill',
+					style: `width:${Math.max(0, Math.min(100, value))}%;background:${color}`,
+				}),
+			]),
+		]);
+
+	SD.dom = {
+		h,
+		withSound,
+		icon,
+		empty,
+		note,
+		badge,
+		status,
+		tile,
+		tiles,
+		legend,
+		money,
+		table,
+		barList,
+		card,
+		panel,
+		meter,
+	};
 })((globalThis.StudioDashboard = globalThis.StudioDashboard || {}));

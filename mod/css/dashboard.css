@@ -612,3 +612,53 @@
 #sdDashboard .sdDevInput.sdDevShort {
 	width: 60px;
 }
+
+/* ---- Franchise health ---- */
+
+#sdDashboard .sdHealth {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 18px;
+	align-items: center;
+	margin: 6px 0 10px;
+	padding: 10px 0;
+	border-top: 1px solid var(--sd-hairline-soft);
+	border-bottom: 1px solid var(--sd-hairline-soft);
+}
+
+#sdDashboard .sdMeter {
+	width: 170px;
+}
+
+#sdDashboard .sdMeterHead {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin-bottom: 4px;
+}
+
+#sdDashboard .sdMeterValue {
+	color: var(--sd-ink);
+	font-size: 14px;
+	font-weight: 600;
+}
+
+#sdDashboard .sdMeterTrack {
+	height: 6px;
+	border-radius: 3px;
+	background: var(--sd-hairline-soft);
+	overflow: hidden;
+}
+
+#sdDashboard .sdMeterFill {
+	height: 100%;
+	border-radius: 3px;
+}
+
+#sdDashboard .sdOutlook {
+	flex: 1;
+	min-width: 240px;
+	color: var(--sd-ink-2);
+	font-size: 13px;
+	line-height: 1.5;
+}
