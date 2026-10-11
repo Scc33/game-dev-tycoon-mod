@@ -42,8 +42,8 @@
 		};
 	};
 
-	// Follow sequelTo links back to the original game. Entries are in release order; a
-	// sequel in development is appended with inDevelopment = true.
+	// Follow sequelTo (and remaster) links back to the original game. Entries are in release
+	// order; a sequel in development is appended with inDevelopment = true.
 	F.all = (company) => {
 		const games = SD.games.all(company);
 		const current = company.currentGame;
@@ -53,11 +53,12 @@
 		games.forEach((g) => {
 			byId[g.id] = g;
 		});
+		const parentOf = (g) => byId[g.sequelTo] || byId[g.remasterOf] || null;
 		const rootOf = (g) => {
 			const seen = {};
-			while (g.sequelTo && byId[g.sequelTo] && !seen[g.id]) {
+			while (parentOf(g) && !seen[g.id]) {
 				seen[g.id] = true;
-				g = byId[g.sequelTo];
+				g = parentOf(g);
 			}
 			return g;
 		};
@@ -79,17 +80,21 @@
 		entries.sort((a, b) => !!a.inDevelopment - !!b.inDevelopment || a.releaseWeek - b.releaseWeek);
 		const withGaps = entries.map((e) => {
 			const prev = e.sequelTo ? byId[e.sequelTo] : null;
+			const original = e.remasterOf ? byId[e.remasterOf] : null;
 			return {
 				...e,
 				predecessor: prev ? prev.title : null,
+				original: original ? original.title : null,
 				gapWeeks: prev && !e.inDevelopment ? e.releaseWeek - prev.releaseWeek : null,
 				repeatsLastRelease: !!e.inDevelopment && repeats(e, last),
 			};
 		});
 		const released = withGaps.filter((e) => !e.inDevelopment);
-		const scored = released.filter((e) => e.score > 0 && !e.isPack);
+		// Remasters count towards the series' money, but its scores and its next sequel come
+		// from the new games.
+		const scored = released.filter((e) => e.score > 0 && !e.isPack && !e.isRemaster);
 		const sum = (key) => released.reduce((s, e) => s + e[key], 0);
-		const tail = released.filter((e) => !hasFollowUp[e.id]).pop() || null;
+		const tail = released.filter((e) => !hasFollowUp[e.id] && !e.isRemaster).pop() || null;
 		return {
 			id: withGaps[0].id,
 			name: withGaps[0].title,
@@ -112,7 +117,7 @@
 		const hasFollowUp = followedUp(games, company);
 		const last = F.lastRelease(company);
 		return games
-			.filter((g) => !g.isPack && !g.sequelTo && !hasFollowUp[g.id] && g.score >= 7 && g.profit > 0)
+			.filter((g) => !g.isPack && !g.isRemaster && !g.sequelTo && !hasFollowUp[g.id] && g.score >= 7 && g.profit > 0)
 			.sort((a, b) => b.score - a.score || b.revenue - a.revenue)
 			.slice(0, limit)
 			.map((g) => ({ ...g, next: F.sequelAdvice(g, company.currentWeek, last) }));

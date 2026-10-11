@@ -166,3 +166,31 @@ describe('franchise model: classification and labels', () => {
 		assert.equal(M.fatigueLabel(100), 'Worn out');
 	});
 });
+
+describe('franchise model: remasters', () => {
+	const remaster = (week, score) => ({ week, score, kind: 'remaster' });
+	const r1 = (v) => Math.round(v * 10) / 10;
+
+	it('is its own kind of entry', () => {
+		assert.equal(M.kindOf({ isRemaster: true, genre: 'RPG', topic: 'Space' }, null), 'remaster');
+	});
+
+	it('pulls the brand 30% of the way to its quality and adds a little fatigue', () => {
+		const state = M.evolve([mainline(0, 10), remaster(400, 7)], 400);
+		// brand 75, faded to 50% after a long silence → 37.5; then 0.7 × 37.5 + 0.3 × 50
+		assert.equal(r1(state.brand), 41.3);
+		assert.equal(state.fatigue, 10);
+	});
+
+	it('can drag a strong brand down', () => {
+		const state = M.evolve([mainline(0, 10), mainline(60, 10), remaster(100, 5)], 100);
+		assert.ok(state.brand < M.evolve([mainline(0, 10), mainline(60, 10)], 100).brand);
+	});
+
+	it('restarts the dormancy clock', () => {
+		const quiet = M.evolve([mainline(0, 9)], 300);
+		const kept = M.evolve([mainline(0, 9), remaster(140, 9)], 300);
+		assert.ok(quiet.brand < kept.brand);
+		assert.equal(kept.lastWeek, 140);
+	});
+});

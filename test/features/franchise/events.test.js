@@ -155,6 +155,26 @@ describe('fan events: fans want more', () => {
 		assert.match(company.notifications[0].text, /promised a new Quest game/);
 	});
 
+	it('does not count a remaster as the promised new game', () => {
+		const company = studio(110);
+		env.events.tease.getNotification(company);
+		env.globals.GameManager.company = company;
+		env.events.tease.complete(0);
+		company.gameLog.push(
+			makeGame({
+				id: 'q1r',
+				title: 'Quest HD',
+				releaseWeek: 150,
+				score: 8,
+				flags: { sdRemaster: { of: 'q1' } },
+				...rpg,
+			}),
+		);
+		company.currentWeek = 160;
+		env.SD.franchise.events.onWeek(company);
+		assert.equal(env.SD.franchise.store.events()[0].status, 'open');
+	});
+
 	it('keeps a promise once the next entry is under way', () => {
 		const company = studio(110);
 		env.events.tease.getNotification(company);

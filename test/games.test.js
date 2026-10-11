@@ -95,3 +95,23 @@ describe('games.summary', () => {
 		assert.equal(s.best, null);
 	});
 });
+
+describe('games: remasters', () => {
+	const original = () => makeGame({ id: 'g1', title: 'Star Quest' });
+	const remaster = () =>
+		makeGame({ id: 'g2', title: 'Star Quest Remastered', flags: { sdRemaster: { of: 'g1', tier: 'remaster' } } });
+
+	it('reads the remaster details from the game', () => {
+		const s = SD.games.stats(remaster());
+		assert.equal(s.isRemaster, true);
+		assert.equal(s.remasterOf, 'g1');
+		assert.equal(s.remasterTier, 'remaster');
+		assert.equal(SD.games.stats(original()).isRemaster, false);
+	});
+
+	it('marks games that have been remastered', () => {
+		const [one, two] = SD.games.all(makeCompany([original(), remaster()]));
+		assert.equal(one.remastered, true);
+		assert.equal(two.remastered, false);
+	});
+});

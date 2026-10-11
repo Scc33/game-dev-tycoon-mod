@@ -28,6 +28,9 @@
 		greatScore: 9, // at or above this an entry refreshes the series
 		fatigueGreat: -20,
 		fatigueRecoveryPerMonth: 2.5,
+		// A remaster (features/remaster) moves the brand like a spin-off and tires fans a little.
+		remasterWeight: 0.3,
+		fatigueRemaster: 10,
 		// Effects on the next entry.
 		hypePerBrand: 2,
 		spinoffBrandShare: 0.6,
@@ -56,12 +59,13 @@
 	const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 	const months = (weeks) => weeks / SD.WEEKS_PER_MONTH;
 
-	M.KINDS = { mainline: 'mainline', spinoff: 'spinoff', pack: 'pack', adjust: 'adjust' };
+	M.KINDS = { mainline: 'mainline', spinoff: 'spinoff', pack: 'pack', remaster: 'remaster', adjust: 'adjust' };
 
 	// An entry is a spin-off when its genre or topic differs from its predecessor's.
-	// `entry` and `predecessor` carry { isPack, genre, topic }, e.g. SD.games.stats().
+	// `entry` and `predecessor` carry { isPack, isRemaster, genre, topic }, e.g. SD.games.stats().
 	M.kindOf = (entry, predecessor) => {
 		if (entry.isPack) return M.KINDS.pack;
+		if (entry.isRemaster) return M.KINDS.remaster;
 		if (predecessor && (entry.genre !== predecessor.genre || entry.topic !== predecessor.topic)) return M.KINDS.spinoff;
 		return M.KINDS.mainline;
 	};
@@ -80,7 +84,17 @@
 		};
 	};
 
+	// A remaster re-releases an entry: it pulls the brand towards its own quality and restarts
+	// the dormancy clock, without the extra fatigue rules of a new entry.
+	const remaster = (state, entry, t) => {
+		const q = M.quality(entry.score, t);
+		const brand = state.released ? (1 - t.remasterWeight) * state.brand + t.remasterWeight * q : t.firstEntryShare * q;
+		const fatigue = clamp(state.fatigue + t.fatigueRemaster, 0, 100);
+		return { released: true, lastWeek: entry.week, brand, fatigue, lastBrand: brand, lastFatigue: fatigue };
+	};
+
 	const release = (state, entry, t) => {
+		if (entry.kind === M.KINDS.remaster) return remaster(state, entry, t);
 		const q = M.quality(entry.score, t);
 		const spinoff = entry.kind === M.KINDS.spinoff;
 		let brand;

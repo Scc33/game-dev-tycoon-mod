@@ -40,6 +40,10 @@
 			isPublished: !!flags.royaltyRate, // made under a publishing deal
 			onSale: !game.soldOut,
 			sequelTo: game.sequelTo || null,
+			// Remasters (features/remaster) carry their details on the game itself.
+			isRemaster: !!flags.sdRemaster,
+			remasterOf: flags.sdRemaster ? flags.sdRemaster.of : null,
+			remasterTier: flags.sdRemaster ? flags.sdRemaster.tier : null,
 			genre: genreName(game),
 			topic: game.topic ? game.topic.name : '',
 			platforms: (game.platforms || []).map((p) => p.name),
@@ -52,7 +56,18 @@
 		};
 	};
 
-	G.all = (company) => (company.gameLog || []).map(G.stats);
+	// Every released game, with `remastered` set on games a remaster has been made of.
+	G.all = (company) => {
+		const games = (company.gameLog || []).map(G.stats);
+		const remastered = {};
+		games.forEach((g) => {
+			if (g.remasterOf) remastered[g.remasterOf] = true;
+		});
+		games.forEach((g) => {
+			g.remastered = !!remastered[g.id];
+		});
+		return games;
+	};
 
 	// Game sales income per month across the whole save, rebuilt from each game's weekly
 	// sales log (one entry per week on sale, starting the week after release).

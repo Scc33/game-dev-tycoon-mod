@@ -136,3 +136,35 @@ describe('franchises.candidates', () => {
 		assert.equal(picks.length, 0);
 	});
 });
+
+describe('franchises: remasters', () => {
+	const remasterOf = (id, overrides = {}) =>
+		makeGame({
+			id: `${id}r`,
+			releaseWeek: 400,
+			score: 9.5,
+			flags: { sdRemaster: { of: id, tier: 'remaster' } },
+			...overrides,
+		});
+
+	it('turns a remastered standalone game into a series', () => {
+		const games = [...series(), remasterOf('s1', { title: 'Solo Remastered', revenue: 100000, costs: 20000 })];
+		const solo = SD.franchises.all(makeCompany(games, { currentWeek: 420 })).find((f) => f.name === 'Solo');
+		assert.deepEqual(plain(solo.entries.map((e) => e.title)), ['Solo', 'Solo Remastered']);
+		assert.equal(solo.entries[1].original, 'Solo');
+		assert.equal(solo.entries[1].gapWeeks, null);
+		assert.equal(solo.revenue, 400000);
+	});
+
+	it('leaves remasters out of the scores and the next sequel', () => {
+		const games = [...series(), remasterOf('p1', { title: 'Pals HD' })];
+		const pals = SD.franchises.all(makeCompany(games, { currentWeek: 420 })).find((f) => f.name === 'Pals');
+		assert.deepEqual([...pals.scores], [7, 8.5]);
+		assert.equal(pals.next.basedOn, 'Pals 2: Extra');
+	});
+
+	it('never suggests a remaster as sequel material', () => {
+		const games = [makeGame({ id: 'a', score: 6, revenue: 1000 }), remasterOf('a', { title: 'A HD' })];
+		assert.equal(SD.franchises.candidates(makeCompany(games, { currentWeek: 420 })).length, 0);
+	});
+});

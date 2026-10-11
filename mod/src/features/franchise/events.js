@@ -203,7 +203,8 @@
 				const series = V.candidates(company).find((c) => c.series.id === promise.series);
 				const started =
 					series &&
-					(series.series.inDevelopment || series.series.entries.some((e) => e.releaseWeek > promise.week && !e.isPack));
+					(series.series.inDevelopment ||
+						series.series.entries.some((e) => e.releaseWeek > promise.week && !e.isPack && !e.isRemaster));
 				if (started) promise.status = 'kept';
 				else if (now > promise.due) {
 					promise.status = 'broken';
