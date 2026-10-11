@@ -9,13 +9,17 @@
 //   node scripts/cheat.mjs unlock sequels          sequels | sizes | mmo
 //   node scripts/cheat.mjs speed 10                multiple of normal game speed
 //   node scripts/cheat.mjs finish                  press Finish on the game in development
+//   node scripts/cheat.mjs skipWeeks 240           let five years pass (best between games)
+//   node scripts/cheat.mjs finishRemaster          release the remaster underway now
 //   node scripts/cheat.mjs addSeries '{"name":"Quest","entries":[{"score":8},{"score":9,"gap":60}],"ago":30}'
 import { readFileSync } from 'node:fs';
 import { connect, evaluate, exitAfter } from './lib/cdp.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
 if (!cmd) {
-	console.error('usage: cheat.mjs <sandbox|cash|fans|unlock|speed|finish|addGame|addSeries> [args]');
+	console.error(
+		'usage: cheat.mjs <sandbox|cash|fans|unlock|speed|skipWeeks|finish|finishRemaster|addGame|addSeries> [args]',
+	);
 	process.exit(1);
 }
 exitAfter(30000);

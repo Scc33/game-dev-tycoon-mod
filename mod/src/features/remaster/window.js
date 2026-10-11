@@ -203,7 +203,7 @@
 			line(
 				'Sales',
 				`${fmt.percent(plan.multiplier)} of a new game`,
-				`with the same score, on today's market; nostalgia ${fmt.percent(plan.nostalgia)}`,
+				`with the same score on today's market (nostalgia ${fmt.percent(plan.nostalgia)}). The original earned ${fmt.money(original.revenue || 0)}.`,
 			),
 			effect
 				? line(

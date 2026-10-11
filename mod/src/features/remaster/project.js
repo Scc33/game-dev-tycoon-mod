@@ -236,7 +236,9 @@
 		const multiplier = M().salesMultiplier({ ageWeeks, brand: P.brand(company, original.id) });
 		const score = M().rollScore(project.expected, company.getRandom());
 		const onMarket = Platforms.getPlatformsOnMarket(company);
-		const platforms = project.platformIds.map((id) => onMarket.find((p) => p.id === id)).filter(Boolean);
+		const chosen = project.platformIds.map((id) => onMarket.find((p) => p.id === id)).filter(Boolean);
+		// If every chosen platform left the market during the work, ship on the biggest one left.
+		const platforms = chosen.length ? chosen : P.platforms(company).slice(0, 1);
 
 		// The Game constructor hands pending conference hype to the new game; keep it for the
 		// next real one.

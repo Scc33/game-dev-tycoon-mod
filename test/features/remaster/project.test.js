@@ -309,6 +309,15 @@ describe('remaster project: release', () => {
 		assert.equal(env.SD.remaster.store.projects().length, 0);
 	});
 
+	it('ships on the biggest platform left if the chosen ones retired meanwhile', () => {
+		const company = studio(env.globals);
+		startHit(env, company, { platformIds: ['PC'] });
+		env.globals.Platforms.getPlatformsOnMarket = () => [BOX, NEW];
+		finish(company);
+		const game = company.gameLog.find((g) => g.flags.sdRemaster);
+		assert.deepEqual(plain(game.platforms.map((p) => p.id)), ['BOX']);
+	});
+
 	it('scores the remaster from the plan, with luck in the middle here', () => {
 		const company = studio(env.globals);
 		const project = startHit(env, company);
