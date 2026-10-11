@@ -1,7 +1,7 @@
 # Studio Dashboard: a Game Dev Tycoon mod
 
 A finance and franchise dashboard for [Game Dev Tycoon](https://www.greenheartgames.com/app/game-dev-tycoon/).
-Right-click your office and pick **Studio Dashboard...** to see where your money comes from and goes,
+Click your office and pick **Studio Dashboard...** to see where your money comes from and goes,
 how every game performed, and how your sequels stack up.
 
 ![Cash flow tab](docs/images/cashflow.png)
@@ -60,7 +60,7 @@ That history is stored inside your save file.
      choose _Show Package Contents_, then open `Contents/Resources/app.nw/mods/`
    - **Linux:** the game's install folder (usually under `~/.steam/steam/steamapps/common/`), then `mods/`
 2. Start the game, open **Mods** from the main menu, enable **Studio Dashboard**, and restart.
-3. In game, right-click the office floor and choose **Studio Dashboard...**
+3. In game, click the office floor and choose **Studio Dashboard...**
 
 Loading a save made without the mod shows the game's "mod mismatch" warning once. Choose
 **Load Anyway**; the warning goes away after the next save.
