@@ -23,6 +23,7 @@
 		'src/features/franchise/series.js',
 		'src/features/franchise/effects.js',
 		'src/features/franchise/events.js',
+		'src/features/remaster/model.js',
 		'src/charts.js',
 		'src/ui/dom.js',
 		'src/ui/dashboard.js',

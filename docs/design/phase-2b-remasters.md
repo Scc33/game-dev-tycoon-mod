@@ -60,7 +60,7 @@ _Dating_ is how much standards have risen since the original came out: 0.15 per 
 | Work   | 1.5 weeks × size step                | 3 weeks × size step   | 6 weeks × size step  |
 | Budget | ½ month of running costs × size step | 1 month × size step   | 2 months × size step |
 | Review | original − dating                    | original − ⅓ × dating | original + 0.5       |
-| Title  | "X"                                  | "X Remastered"        | "X Remake"           |
+| Title  | "X HD"                               | "X Remastered"        | "X Remake"           |
 
 Running costs are the studio's monthly costs (office plus salaries), so budgets grow with the
 studio and stay meaningful in every era. Each platform also adds its per-game development cost.
