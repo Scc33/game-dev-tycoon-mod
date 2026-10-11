@@ -11,7 +11,8 @@ more reasons to keep a studio going for decades, without breaking saves or the g
   changes balance is clearly described and can be disabled.
 - **Work with the game, not against it.** Hook documented events and wrap game functions rather
   than replacing them; record every hook in `docs/GAME-INTERNALS.md`.
-- **Save-safe.** Per-save state goes through the mod data store with a schema version and migrations.
+- **No save baggage.** Per-save state goes through the mod data store. The mod isn't published, so
+  data shapes change freely; no migrations until there are players to protect.
 - **Tested and observable.** Pure logic is unit-tested; gameplay changes get in-game verification
   through the CDP scripts, plus a dashboard view of what the feature is doing.
 
@@ -32,22 +33,26 @@ are in [design/phase-2-franchises.md](design/phase-2-franchises.md). Candidate f
 - **Spin-offs.** A sequel in a different genre or topic keeps part of the brand at lower risk of
   fatigue.
 - **Remasters.** Re-release an old hit on newer platforms for a cheaper, smaller return that also
-  refreshes the brand.
+  refreshes the brand (Phase 2b).
 - **Fan expectations.** Events where fans demand a sequel, react to a long silence, or celebrate an
   anniversary, with choices that trade money for reputation.
 - **Dashboard support.** The Franchises tab shows reputation, fatigue and the expected hype for the
   next entry, so players can plan around the new systems.
 
 Built: brand, fatigue, spin-offs, launch hype, sales effects, fan events, dashboard support and a
-Settings tab. Next: tune the numbers through play testing (the Developer tab's cheats help), then
-Phase 2b, remasters, which need their own research into the game-creation screen.
+Settings tab. The numbers are being tuned through play testing (the Developer tab's cheats help).
+
+## Phase 2b: Remasters (in progress)
+
+A staff member brings an old hit back as a side project: port, remaster or remake, on today's
+platforms, with nostalgia sales and a brand refresh for its series. Design and numbers:
+[design/phase-2b-remasters.md](design/phase-2b-remasters.md).
 
 ## Later ideas (unordered)
 
 - Rival studios that release competing games and react to your hits
 - A yearly industry awards show
 - Going public: share price, investors and dividends
-- Porting back-catalogue games to new consoles
 - Platform market-share history charts and forecasts
 - Staff morale, burnout and crunch
 - Live-service games and paid DLC

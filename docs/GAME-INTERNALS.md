@@ -93,6 +93,14 @@ Releasing a game runs, in order: `beforeReleaseGame`, the release week is set, t
 (`beforeGameReview` … `afterGameReview`), the sales calculation (`salesCalculated`), the game is
 appended to `gameLog`, then `afterReleaseGame`.
 
+- `gameLog` is in release order, and a lot of code reads its last entry as "our latest game": the
+  "Another X/Y game?" review penalty, the review window, the bank's mini-credit, several decision
+  events and achievements. A mod that adds a game outside the normal release flow should insert it
+  before that entry.
+- The Develop Sequel picker lists `company.getPossibleGamesForSequel()` (every game nothing follows
+  yet); Develop Expansion Pack lists `getPossibleGamesForPack()`. Both are `Company.prototype`
+  methods, so a mod can wrap them to filter the list.
+
 ## Hype
 
 - Each game has `hypePoints`. Sources: marketing campaigns during development, game conferences,
@@ -150,6 +158,41 @@ appended to `gameLog`, then `afterReleaseGame`.
   - Below 5, _or any sequel released too soon_: up to 25% × (1 − score/10) of fans are lost. So a
     rushed sequel loses fans even when it reviews well.
   - Fan changes are paid out alongside weekly sales.
+
+## Selling a game outside the release flow
+
+- `Sales.calculateSales(company, game)` works on any `Game` with a score, platforms, size and
+  audience, so a mod can price a game it releases itself. It uses the company's random numbers,
+  can push piracy news when pirate mode is on, and fires `salesCalculated`. Sales start the week
+  after `releaseWeek`; the weekly loop (`Sales.processSales`) sells every game in `gameLog` that is
+  past its release week and not sold out.
+- `Reviews.getReviews(game, score, goodRemarks, badRemarks)` returns the four review cards
+  (`{score, message, reviewerName}`) for a score, mixing in a remark from the two lists 20% of the
+  time and the game's generic messages otherwise.
+
+## Staff activities
+
+- Research and training run through `GameManager.research(item, "training")` for the staff member
+  in `GameManager.uiSettings.selectedChar`. Progress is elapsed game time over the item's
+  `duration` (4,000 per week at normal speed), and the person takes no part in the game in
+  development until it is done.
+- Training items are plain objects on the global `Training`: anything with `id`, `pointsCost` and
+  `duration` counts. `tick(staff, delta)` runs each frame (without it the game's skill training
+  runs) and `complete(staff)` runs at the end, followed by an autosave. With `canUse` returning false
+  and no `canSee`, the item never appears in the Train menu; the game's own patch and game report
+  work like this.
+- In-progress work is saved in `currentResearches` by item id, so the item must exist when the save
+  loads and when the work finishes.
+- `General.getMonthlyCosts(company)` is the monthly bill: $8K for the garage, ×4 for the second and
+  third offices, ×8 for the last one, plus every salary.
+- A staff member's skills are `designFactor`, `technologyFactor`, `speedFactor` and
+  `researchFactor`, around 0 to 1.
+- The right-click menu on a staff member is part of the `primary` office menu; `UI.getCharUnderCursor()`
+  finds the person (in the garage the menu is for the founder, `staff[0]`). The game adds Research
+  and Train only while `staff.canStartResearch()` (idle).
+- `Platforms.getPlatformsOnMarket(company)` lists platforms on sale now; `company.licencedPlatforms`
+  are the ones the studio may develop for. Each has a per-game `developmentCosts`, and
+  `Platforms.getTotalMarketSizePercent(platform, company)` gives its market share.
 
 ## Decision events
 
