@@ -17,7 +17,7 @@ and faster than a new game, and earns less.
 2. **Reward a good back catalogue.** Great old games with loyal fans make the best remasters.
 3. **Fit the franchise systems.** A remaster keeps a dormant series alive, can rebuild its brand
    before a sequel, and a botched one can hurt it.
-4. **Feel like part of the game.** Start it from the staff member's right-click menu like
+4. **Feel like part of the game.** Start it from the staff member's action menu like
    research or training. Release it with reviews, a sales card and a first-week report, like any
    other game.
 5. **Visible and tunable.** Every number lives in one table, and the dashboard shows the
@@ -27,7 +27,7 @@ and faster than a new game, and earns less.
 
 1. When a game first becomes old enough to remaster, a one-off message tells the player what a
    remaster is and where to start one.
-2. Right-click an idle staff member and choose **Remaster a game...** (in the garage this is the
+2. Click an idle staff member and choose **Remaster a game...** (in the garage this is the
    founder). It is hidden while a remaster is already underway or when there is nothing to
    remaster.
 3. The **Remaster** window lists every eligible game with its score, age and nostalgia. The player
@@ -163,6 +163,6 @@ multiplier }`. The project underway lives in the mod's data store.
 2. The pure model (eligibility, tiers, score, sales multiplier) with tests.
 3. Remasters in `SD.games`, `SD.franchises` and the franchise model, with tests.
 4. The project lifecycle: start, the training item, release; tested against stubs.
-5. The Remaster window and right-click menu entry; the sequel picker filter.
+5. The Remaster window and action menu entry; the sequel picker filter.
 6. The Remasters tab, badges, the discovery message and developer cheats.
 7. Play test in the real game, then tune.

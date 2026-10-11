@@ -9,7 +9,7 @@
 		group: 'Developer',
 		name: 'Developer tools',
 		description:
-			'Adds a Developer tab with cheats for testing: money, fans, research, game speed, finishing a game and made-up release history. Using them changes this save.',
+			'Adds a Developer tab with cheats for testing: money, fans, research, game speed, skipping time, finishing a game or remaster and made-up release history. Using them changes this save.',
 		default: false,
 		order: 1000,
 	};
@@ -69,6 +69,30 @@
 			if (GameManager.currentFeature) GameManager.currentFeature.progress = 1;
 			company().currentGame.flags.finished = true;
 		}
+		return true;
+	};
+
+	// Moves the clock forward. The game catches up week by week as soon as it runs again:
+	// sales, monthly costs, new platforms and events all happen as if the time had passed.
+	// Best used between games: a game in development would finish its current stage at once.
+	D.skipWeeks = (weeks = 48) => {
+		if (!(weeks > 0)) throw new Error('Skip a positive number of weeks.');
+		GameManager.gameTime += weeks * GameManager.SECONDS_PER_WEEK * 1000;
+		return weeks;
+	};
+
+	// Completes remaster work underway now, through the game's own finishing step.
+	const remastering = () =>
+		(company().staff || []).find(
+			(s) => s.currentResearch && SD.remaster && s.currentResearch.id === SD.remaster.project.TRAINING_ID,
+		) || null;
+
+	D.canFinishRemaster = () => !!remastering();
+
+	D.finishRemaster = () => {
+		const staff = remastering();
+		if (!staff) return false;
+		GameManager.finishResearch(staff);
 		return true;
 	};
 

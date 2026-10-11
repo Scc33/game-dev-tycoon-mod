@@ -30,7 +30,17 @@ function setup() {
 	}
 	const genres = [{ name: 'Action' }, { name: 'RPG' }];
 	const globals = {
-		GameManager: { company, _timeModifier: 1, _oldTimeModifier: 1, isGamePaused: () => false },
+		GameManager: {
+			company,
+			_timeModifier: 1,
+			_oldTimeModifier: 1,
+			isGamePaused: () => false,
+			gameTime: 1000,
+			SECONDS_PER_WEEK: 4,
+			finishResearch: (staff) => {
+				finished.push(staff.id);
+			},
+		},
 		Game,
 		GameGenre: { getAll: () => genres },
 		Topics: { topics: [{ name: 'Space' }, { name: 'Fantasy' }] },
@@ -39,8 +49,9 @@ function setup() {
 		GameState: { released: 4 },
 		Research: { Sequels: { name: 'Sequels' }, expansionPack: { name: 'Expansion packs' } },
 	};
+	const finished = [];
 	const SD = loadMod(['src/dev/cheats.js'], globals);
-	return { SD, company, globals };
+	return { SD, company, globals, finished };
 }
 
 describe('developer cheats', () => {
@@ -118,5 +129,20 @@ describe('developer cheats', () => {
 
 	it('is hidden behind a setting that is off by default', () => {
 		assert.equal(env.SD.options['dev.tools'].default, false);
+	});
+
+	it('skips time forward for the game to catch up on', () => {
+		assert.equal(env.SD.dev.skipWeeks(48), 48);
+		assert.equal(env.globals.GameManager.gameTime, 1000 + 48 * 4000);
+		assert.throws(() => env.SD.dev.skipWeeks(0), /positive/);
+	});
+
+	it('finishes remaster work underway through the game', () => {
+		assert.equal(env.SD.dev.canFinishRemaster(), false);
+		env.SD.remaster = { project: { TRAINING_ID: 'sdRemaster' } };
+		env.company.staff = [{ id: 'a' }, { id: 'b', currentResearch: { id: 'sdRemaster' } }];
+		assert.equal(env.SD.dev.canFinishRemaster(), true);
+		assert.equal(env.SD.dev.finishRemaster(), true);
+		assert.deepEqual(env.finished, ['b']);
 	});
 });

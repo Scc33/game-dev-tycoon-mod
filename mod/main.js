@@ -24,6 +24,10 @@
 		'src/features/franchise/effects.js',
 		'src/features/franchise/events.js',
 		'src/features/remaster/model.js',
+		'src/features/remaster/store.js',
+		'src/features/remaster/project.js',
+		'src/features/remaster/window.js',
+		'src/features/remaster/feature.js',
 		'src/charts.js',
 		'src/ui/dom.js',
 		'src/ui/dashboard.js',
@@ -31,6 +35,7 @@
 		'src/tabs/cashflow.js',
 		'src/tabs/games.js',
 		'src/tabs/franchises.js',
+		'src/tabs/remasters.js',
 		'src/tabs/ledger.js',
 		'src/tabs/settings.js',
 		'src/dev/cheats.js',
@@ -38,10 +43,12 @@
 		'src/hooks.js',
 	];
 
-	const style = document.createElement('link');
-	style.rel = 'stylesheet';
-	style.href = `${SD.assetPath}/css/dashboard.css`;
-	document.head.appendChild(style);
+	['dashboard.css', 'remaster.css'].forEach((file) => {
+		const style = document.createElement('link');
+		style.rel = 'stylesheet';
+		style.href = `${SD.assetPath}/css/${file}`;
+		document.head.appendChild(style);
+	});
 
 	GDT.loadJs(
 		scripts.map((file) => `${SD.path}/${file}`),

@@ -1,4 +1,4 @@
-// Studio Dashboard remasters: hooks the feature into the game. The right-click menu on an
+// Studio Dashboard remasters: hooks the feature into the game. The action menu on an
 // idle staff member offers "Remaster a game...", the work is registered as one of the game's
 // staff activities, remasters are kept out of the Develop Sequel picker, and a weekly check
 // cleans up abandoned work and tells the player once remasters become possible.
@@ -25,7 +25,7 @@
 		},
 	});
 
-	// Who a right-click on the office floor is about: the person under the cursor, or the
+	// Who a click on the office floor is about: the person under the cursor, or the
 	// founder in the garage, where the game shows staff options for them.
 	const staffForMenu = (company) => (company.currentLevel > 1 ? UI.getCharUnderCursor() : company.staff[0]);
 

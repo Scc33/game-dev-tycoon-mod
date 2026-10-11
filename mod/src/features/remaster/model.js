@@ -95,6 +95,8 @@
 		(1 + t.nostalgiaBonus * M.nostalgia(ageWeeks, t)) *
 		(brand === null ? 1 : 1 + (t.brandSalesBonus * brand) / 100);
 
+	M.tierName = (tier, t = M.TUNING) => (t.tiers[tier] || t.tiers.remaster).name;
+
 	M.title = (originalTitle, tier, t = M.TUNING) => `${originalTitle}${tierOf(tier, t).suffix}`;
 
 	// For ranking candidates: good games fans have missed longest first.

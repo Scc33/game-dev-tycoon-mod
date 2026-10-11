@@ -187,7 +187,7 @@ appended to `gameLog`, then `afterReleaseGame`.
   third offices, ×8 for the last one, plus every salary.
 - A staff member's skills are `designFactor`, `technologyFactor`, `speedFactor` and
   `researchFactor`, around 0 to 1.
-- The right-click menu on a staff member is part of the `primary` office menu; `UI.getCharUnderCursor()`
+- The menu for a staff member is part of the `primary` office menu; `UI.getCharUnderCursor()`
   finds the person (in the garage the menu is for the founder, `staff[0]`). The game adds Research
   and Train only while `staff.canStartResearch()` (idle).
 - `Platforms.getPlatformsOnMarket(company)` lists platforms on sale now; `company.licencedPlatforms`
@@ -214,7 +214,8 @@ appended to `gameLog`, then `afterReleaseGame`.
 
 ## UI
 
-- Right-click menus fire `ui.contextMenuShowing` with `{type, items}`; push `{label, icon, action}` to
+- The office's action menu opens on a plain click (the game's right-click option, `GameFlags.RCLICK_MENU`,
+  is off). It fires `ui.contextMenuShowing` with `{type, items}`; push `{label, icon, action}` to
   add an entry. Office menus have type `primary` or `secondary`.
 - `UI.showModalContent(selector, {close: true, disableCheckForNotifications: true})` opens a window in
   the game's style, pauses the game, and resumes it on close. Without `disableCheckForNotifications`

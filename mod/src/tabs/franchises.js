@@ -82,6 +82,7 @@
 							e.title,
 							e.isPack ? badge('Pack') : null,
 							!e.isPack && kindOf(e) === 'spinoff' ? badge('Spin-off') : null,
+							e.isRemaster ? badge(SD.remaster.model.tierName(e.remasterTier)) : null,
 							e.inDevelopment ? badge('In development', 'live') : null,
 						]),
 				},

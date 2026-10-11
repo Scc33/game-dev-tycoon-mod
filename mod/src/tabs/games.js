@@ -30,6 +30,7 @@
 						h('span', {}, [
 							g.title,
 							g.isPack ? badge('Pack') : null,
+							g.isRemaster ? badge(SD.remaster.model.tierName(g.remasterTier)) : null,
 							g.isMMO ? badge('MMO') : null,
 							g.isPublished ? badge('Published') : null,
 							g.onSale ? badge('On sale', 'live') : null,

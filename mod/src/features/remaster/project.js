@@ -38,7 +38,7 @@
 
 	const M = () => R.model;
 	const T = () => R.model.TUNING;
-	const tierName = (tier) => T().tiers[tier].name;
+	const tierName = (tier) => R.model.tierName(tier);
 	const msPerWeek = () =>
 		(typeof GameManager !== 'undefined' && GameManager.SECONDS_PER_WEEK ? GameManager.SECONDS_PER_WEEK : 4) * 1000;
 
@@ -129,9 +129,58 @@
 		});
 	};
 
+	// What releasing a remaster with `score` now would do to the series: brand and fatigue
+	// before and after, from the franchise model.
+	P.seriesEffect = (company, originalId, score) => {
+		const F = SD.franchise;
+		const series = P.series(company, originalId);
+		if (!F || !F.series || !series) return null;
+		const fatigue = SD.settings.get('franchise.fatigue') !== false;
+		const week = company.currentWeek;
+		const timeline = F.series.timeline(series);
+		const before = F.model.evolve(timeline, week);
+		const after = F.model.evolve(timeline.concat({ week, score, kind: F.model.KINDS.remaster }), week);
+		return {
+			name: series.name,
+			brandBefore: before.brand,
+			brandAfter: after.brand,
+			fatigueBefore: fatigue ? before.fatigue : 0,
+			fatigueAfter: fatigue ? after.fatigue : 0,
+		};
+	};
+
 	P.busy = () => R.store.projects().length >= T().maxProjects;
 
-	// Whether the right-click menu should offer a remaster to `staff`.
+	// Remasters underway: who is on each, how far along it is and roughly how long is left.
+	P.underway = (company) =>
+		R.store.projects().map((project) => {
+			const staff = (company.staff || []).find((s) => s.id === project.staffId) || null;
+			const work =
+				staff && staff.currentResearch && staff.currentResearch.id === P.TRAINING_ID ? staff.currentResearch : null;
+			const progress = work ? work.progress || 0 : 0;
+			return {
+				project,
+				staff,
+				progress,
+				weeksLeft: Math.max(0, Math.ceil(project.weeks * (1 - progress))),
+				original: gameById(company, project.originalId),
+			};
+		});
+
+	// Released remasters, newest first, each with its original and its sales multiplier.
+	P.released = (company) => {
+		const games = SD.games.all(company);
+		return games
+			.filter((g) => g.isRemaster)
+			.sort((a, b) => b.releaseWeek - a.releaseWeek)
+			.map((g) => ({
+				game: g,
+				original: games.find((o) => o.id === g.remasterOf) || null,
+				multiplier: gameById(company, g.id).flags[P.FLAG].multiplier || null,
+			}));
+	};
+
+	// Whether the action menu should offer a remaster to `staff`.
 	P.canOffer = (company, staff) =>
 		P.enabled() && !!staff && staff.canStartResearch() && !P.busy() && P.eligible(company).length > 0;
 
@@ -226,8 +275,10 @@
 		return game;
 	};
 
+	// AutoPopup: shown as a window, like the game's own review news, rather than filed in the
+	// sidebar where untyped messages go.
 	const notify = (company, header, text) => {
-		if (company.notifications) company.notifications.push(new Notification({ header, text }));
+		if (company.notifications) company.notifications.push(new Notification({ header, text, type: 'AutoPopup' }));
 	};
 
 	const reviewLines = (game) => game.reviews.map((r) => `${r.reviewerName}: ${r.score}/10, "${r.message}"`).join('\n');
@@ -278,7 +329,7 @@
 		notify(
 			company,
 			'Remasters',
-			`Fans still talk about ${best.game.title}, ${years} years after it came out.{n}Right-click a staff member and choose "Remaster a game..." to bring an old hit back as a side project: a quick port, a remaster or a full remake for today's platforms. That person sits out of game development until it's done.`,
+			`Fans still talk about ${best.game.title}, ${years} years after it came out.{n}Click a staff member and choose "Remaster a game..." to bring an old hit back as a side project: a quick port, a remaster or a full remake for today's platforms. That person sits out of game development until it's done.`,
 		);
 	};
 

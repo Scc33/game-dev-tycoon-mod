@@ -63,9 +63,19 @@
 					`Now ${speed}×. Applies when the game resumes.`,
 				),
 				row(
+					'Skip ahead',
+					[button('1 year', () => dev.skipWeeks(48)), button('5 years', () => dev.skipWeeks(240))],
+					'Time passes when the game resumes. Best between games.',
+				),
+				row(
 					'Game in development',
 					[button('Finish now', () => dev.finish(), { disabled: !dev.canFinish() })],
 					company.currentGame ? company.currentGame.title : 'None',
+				),
+				row(
+					'Remaster underway',
+					[button('Finish now', () => dev.finishRemaster(), { disabled: !dev.canFinishRemaster() })],
+					dev.canFinishRemaster() ? 'Releases it at once' : 'None',
 				),
 			]),
 		);

@@ -362,9 +362,27 @@ describe('remaster project: release', () => {
 		finish(company);
 		const note = company.notifications[company.notifications.length - 1];
 		assert.equal(note.header, 'Star Quest Remastered is out!');
+		assert.equal(note.type, 'AutoPopup');
 		assert.match(note.text, /Sam has finished Star Quest Remastered, our remaster of Star Quest/);
 		assert.match(note.text, /A: 8\/10, "A classic, lovingly restored."/);
 		assert.deepEqual(env.said, [['sam', 'Remaster done!']]);
+	});
+
+	it('reports work underway and finished remasters for the dashboard', () => {
+		const company = studio(env.globals);
+		const P = env.SD.remaster.project;
+		startHit(env, company);
+		company.staff[1].currentResearch.progress = 0.5;
+		const [u] = P.underway(company);
+		assert.equal(u.staff.id, 'sam');
+		assert.equal(u.weeksLeft, 3);
+		assert.equal(u.original.title, 'Star Quest');
+		finish(company);
+		assert.equal(P.underway(company).length, 0);
+		const [r] = P.released(company);
+		assert.equal(r.game.title, 'Star Quest Remastered');
+		assert.equal(r.original.title, 'Star Quest');
+		assert.ok(r.multiplier > 0.2);
 	});
 
 	it('keeps remasters out of the Develop Sequel picker', () => {
