@@ -1,7 +1,7 @@
 # Phase 2b design: remasters
 
-Status: **in progress (2026-10-11).** Numbers are first guesses for play testing. The mechanics are
-based on the research in [GAME-INTERNALS.md](../GAME-INTERNALS.md).
+Status: **built 2026-10-11 (v0.3).** The numbers are first guesses, to be tuned through play
+testing. The mechanics are based on the research in [GAME-INTERNALS.md](../GAME-INTERNALS.md).
 
 ## The idea
 
@@ -166,3 +166,30 @@ multiplier }`. The project underway lives in the mod's data store.
 5. The Remaster window and action menu entry; the sequel picker filter.
 6. The Remasters tab, badges, the discovery message and developer cheats.
 7. Play test in the real game, then tune.
+
+## As built
+
+- The game's action menu opens on a plain click, not a right-click, so the menu entry and all
+  instructions say "click".
+- A port is titled "X HD".
+- The release, cancellation and one-off explanation messages pop up (the game's `AutoPopup` type);
+  untyped messages would be filed in the sidebar. The release message reveals the four reviews on a
+  second screen, like the game's own review reveal.
+- If every chosen platform leaves the market during the work, the remaster ships on the biggest
+  licensed platform still on sale.
+- The window also shows what the original earned, as a concrete anchor for the sales share.
+- Developer tools gained **Skip ahead** (1 or 5 years) and **Finish remaster**, and
+  `scripts/cheat.mjs` exposes both as `skipWeeks` and `finishRemaster`.
+
+## Play-test notes
+
+First run, in a year 8 studio (four-person office, $32K a month, 330 fans):
+
+- A **remake** of a 9.0 medium game from year 1 (12 weeks, $133K) scored 9.6 with reviews of
+  10, 9, 10 and 10, and is set to earn $1.28M: 25% of a new game with that score.
+- A **port** of an 8.4 small game (1.5 weeks, $21K) scored 7.3 with reviews of 7, 7, 7 and 6, and
+  is set to earn $74K (#44 in the charts in its first weeks).
+
+Watch: a remake of a 9-or-better classic lands at 9.5–10, where the game's sales curve is steepest,
+so remakes of the best games may prove too strong. Tuning levers: `tiers.remake.bonus`, `salesShare`
+and `nostalgiaBonus`.

@@ -32,9 +32,18 @@ anniversary or petition for a dormant one, with choices that trade money or prom
 Rules and numbers:
 [docs/design/phase-2-franchises.md](docs/design/phase-2-franchises.md).
 
+**Remasters** (on by default). Once a game is five years old, click an idle staff member and choose
+**Remaster a game...** to bring it back as a side project while the rest of the studio carries on:
+a quick, cheap **port**, a polished **remaster**, or a full **remake** that can beat the original's
+reviews. Pick the game, platforms and title, and the window shows the time, budget, expected reviews,
+sales and what it will do to the series. Remasters sell to nostalgic fans through the game's own
+sales charts and refresh their series' brand. A **Remasters** tab tracks the work underway, the
+games ready for it and how past remasters did. Rules and numbers:
+[docs/design/phase-2b-remasters.md](docs/design/phase-2b-remasters.md).
+
 **Settings.** Each gameplay feature can be switched off per save. Turning on **Developer tools**
-adds a Developer tab with cheats for testing: money, fans, research, game speed, finishing the game
-in development and made-up release history.
+adds a Developer tab with cheats for testing: money, fans, research, game speed, skipping ahead in
+time, finishing the game or remaster in development and made-up release history.
 
 Every chart has a **Show table** toggle, and hovering a chart shows exact values.
 
@@ -92,17 +101,17 @@ files" restores the original.
 
 The scripts drive the running game over the Chrome DevTools Protocol:
 
-| Command                                                        | What it does                                                        |
-| -------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `npm run game`                                                 | Launch the game with remote debugging (keeps rendering when hidden) |
-| `node scripts/reload.mjs`                                      | Reload the game, continue the latest save, dismiss popups, pause    |
-| `node scripts/reload.mjs --tab games --shot a.png`             | ...then open a dashboard tab and screenshot it                      |
-| `node scripts/cdp.mjs eval "<js>"`                             | Evaluate JavaScript in the game                                     |
-| `node scripts/cdp.mjs evalfile scripts/in-game/demo-studio.js` | Load the demo studio (memory only; reload to discard)               |
-| `node scripts/screenshots.mjs <dir> [--crop]`                  | Capture every dashboard tab                                         |
-| `node scripts/cheat.mjs sandbox`                               | Keep this session's saves (and the release autosave) in memory      |
-| `node scripts/cheat.mjs <cheat> [args]`                        | Run a Developer-tab cheat: `cash`, `fans`, `unlock`, `speed`, ...   |
-| `node scripts/autoplay.mjs --until release`                    | Play forward to the next release; stops at any decision or error    |
+| Command                                                        | What it does                                                          |
+| -------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `npm run game`                                                 | Launch the game with remote debugging (keeps rendering when hidden)   |
+| `node scripts/reload.mjs`                                      | Reload the game, continue the latest save, dismiss popups, pause      |
+| `node scripts/reload.mjs --tab games --shot a.png`             | ...then open a dashboard tab and screenshot it                        |
+| `node scripts/cdp.mjs eval "<js>"`                             | Evaluate JavaScript in the game                                       |
+| `node scripts/cdp.mjs evalfile scripts/in-game/demo-studio.js` | Load the demo studio (memory only; reload to discard)                 |
+| `node scripts/screenshots.mjs <dir> [--crop]`                  | Capture every dashboard tab                                           |
+| `node scripts/cheat.mjs sandbox`                               | Keep this session's saves (and the release autosave) in memory        |
+| `node scripts/cheat.mjs <cheat> [args]`                        | Run a Developer-tab cheat: `cash`, `skipWeeks`, `finishRemaster`, ... |
+| `node scripts/autoplay.mjs --until release`                    | Play forward to the next release; stops at any decision or error      |
 
 To test gameplay quickly: `sandbox`, build history with `addSeries`, start the game to test, then
 `autoplay`. Autoplay only dismisses informational popups and presses Finish/Release Game; it stops

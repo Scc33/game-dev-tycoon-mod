@@ -42,7 +42,7 @@ are in [design/phase-2-franchises.md](design/phase-2-franchises.md). Candidate f
 Built: brand, fatigue, spin-offs, launch hype, sales effects, fan events, dashboard support and a
 Settings tab. The numbers are being tuned through play testing (the Developer tab's cheats help).
 
-## Phase 2b: Remasters (in progress)
+## Phase 2b: Remasters (built, v0.3; in play testing)
 
 A staff member brings an old hit back as a side project: port, remaster or remake, on today's
 platforms, with nostalgia sales and a brand refresh for its series. Design and numbers:

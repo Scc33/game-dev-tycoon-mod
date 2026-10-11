@@ -29,7 +29,11 @@ Gameplay features live in their own folder under `src/features/`, with tests und
 `test/features/`. Each keeps its rules in a pure `model.js` with every balance number in one
 `TUNING` table, and only its hooks file talks to the game. The franchise feature is
 `SD.franchise` (brand, fatigue and their effects); `SD.franchises` is the read-only series
-grouping the dashboard and the feature both build on.
+grouping the dashboard and the feature both build on. The remaster feature is `SD.remaster`: its
+`model.js` holds the rules, `project.js` runs a remaster from start to release, `window.js` is the
+Remaster window and `feature.js` holds the game hooks. Its stylesheet is `css/remaster.css`.
+Features register themselves on `SD.features`, and `SD.hooks.install()` installs each one, so a
+failing feature can't take the dashboard down.
 
 ## Load order
 
