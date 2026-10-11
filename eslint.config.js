@@ -4,21 +4,25 @@ import globals from 'globals';
 // Globals the game page provides to mods. Kept explicit so a typo is still caught.
 const gameGlobals = {
 	$: 'readonly',
+	Company: 'readonly',
 	DataStore: 'readonly',
 	Game: 'readonly',
 	GameGenre: 'readonly',
 	GameManager: 'readonly',
 	GameState: 'readonly',
 	GDT: 'readonly',
+	General: 'readonly',
 	Logger: 'readonly',
 	Missions: 'readonly',
 	Platforms: 'readonly',
 	Research: 'readonly',
+	Reviews: 'readonly',
 	Sales: 'readonly',
 	Sound: 'readonly',
 	Topics: 'readonly',
 	Training: 'readonly',
 	UI: 'readonly',
+	VisualsManager: 'readonly',
 };
 
 export default [
